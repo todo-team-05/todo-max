@@ -1,4 +1,6 @@
 import { colors } from "../../constants/colors";
+import { HistoryIcon } from "../History/HistoryIcon";
+import { HistoryLayer } from "../History/HistoryLayer";
 import { Txt } from "../Txt";
 
 export function Header() {
@@ -16,9 +18,8 @@ export function Header() {
       <Txt typography="displayBold24" color={`${colors.textStrong}`}>
         TODO LIST
       </Txt>
-      <button css={{ border: "none", backgroundColor: "transparent" }}>
-        <img src="/icons/history.svg" alt="history" />
-      </button>
+      <HistoryIcon />
+      <HistoryLayer />
     </div>
   );
 }
