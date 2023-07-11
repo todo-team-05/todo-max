@@ -10,7 +10,8 @@ export function MainPage() {
         flexDirection: "column",
         gap: "32px",
         alignItems: "center",
-        width: "100vw",
+        // width: "100vw",
+        width: "1440px",
         height: "100vh",
         backgroundColor: colors.surfaceAlt,
       }}>
