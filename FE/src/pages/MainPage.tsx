@@ -1,3 +1,4 @@
+import { Header } from "../components/header/Header";
 import { colors } from "../constants/colors";
 
 export function MainPage() {
@@ -11,6 +12,8 @@ export function MainPage() {
         width: "100vw",
         height: "100vh",
         backgroundColor: colors.surfaceAlt,
-      }}></div>
+      }}>
+      <Header />
+    </div>
   );
 }
