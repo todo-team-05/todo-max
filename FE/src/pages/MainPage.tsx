@@ -1,4 +1,5 @@
-import { Header } from "../components/header/Header";
+import { ColumnList } from "../components/ColumnList/ColumnList";
+import { Header } from "../components/Header/Header";
 import { colors } from "../constants/colors";
 
 export function MainPage() {
@@ -14,6 +15,7 @@ export function MainPage() {
         backgroundColor: colors.surfaceAlt,
       }}>
       <Header />
+      <ColumnList />
     </div>
   );
 }
