@@ -5,7 +5,7 @@ export function ColumnWrapper() {
     <div
       css={{
         display: "flex",
-        width: "300px",
+        width: "268px",
         gap: "8px",
         padding: "0 16px",
       }}>
