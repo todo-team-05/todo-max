@@ -8,8 +8,10 @@ export function Header() {
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        width: "1440px",
-        height: "64px",
+        width: "1280px",
+        height: "28px",
+        padding: "0 80px",
+        margin: "18px 0",
       }}>
       <Txt typography="displayBold24" color={`${colors.textStrong}`}>
         TODO LIST
