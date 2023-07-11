@@ -26,10 +26,6 @@ export function Txt({
   return (
     <span
       css={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-
         color,
         ...TYPOGRAPHY_VARIANT[typography],
       }}
