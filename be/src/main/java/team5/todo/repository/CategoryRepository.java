@@ -20,7 +20,7 @@ public class CategoryRepository {
 
 	private RowMapper<Category> categoryRowMapper() {
 		return (rs, rowNum) ->
-			new Category.Builder()
+			Category.builder()
 				.id(rs.getLong("id"))
 				.name(rs.getString("name"))
 				.build();

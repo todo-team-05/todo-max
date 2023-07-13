@@ -16,7 +16,7 @@ public class Card {
 		private String title;
 		private String contents;
 
-		public Builder() {
+		private Builder() {
 		}
 
 		public Builder id(Long id) {
