@@ -57,6 +57,10 @@ public class Card {
 		this.contents = builder.contents;
 	}
 
+	public static Builder builder() {
+		return new Builder();
+	}
+
 	public Long getId() {
 		return id;
 	}
