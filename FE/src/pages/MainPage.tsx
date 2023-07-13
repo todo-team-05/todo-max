@@ -1,10 +1,19 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ColumnList } from "../components/ColumnList/ColumnList";
 import { Header } from "../components/Header/Header";
 import { colors } from "../constants/colors";
+import { Alert } from "../components/Alert/Alert";
+import { ModalContext } from "../contexts/ModalContext";
+import { Dim } from "../components/Dim/Dim";
 
 export function MainPage() {
   const [mainPageData, setMainPageData] = useState<MainPageData>();
+  const modalContextValue = useContext(ModalContext);
+  const { isAlertOpen, setIsAlertOpen } = modalContextValue!;
+
+  const handleClickAlertCancelButton = () => {
+    setIsAlertOpen(false);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -24,16 +33,25 @@ export function MainPage() {
       css={{
         display: "flex",
         flexDirection: "column",
-        gap: "32px",
         alignItems: "center",
         // width: "100vw",
         width: "1440px",
-        height: "100vh",
+        // height: "100vh",
+        height: "1024px",
         backgroundColor: colors.surfaceAlt,
         overflow: "hidden",
       }}>
       <Header />
       <ColumnList data={mainPageData} />
+      {isAlertOpen ? <Dim /> : null}
+      {isAlertOpen ? (
+        <Alert
+          onClickLeftButton={handleClickAlertCancelButton}
+          text="모든 사용자 활동 기록을 삭제할까요?"
+          leftButtonLabel="취소"
+          rightButtonLabel="삭제"
+        />
+      ) : null}
     </div>
   );
 }

@@ -1,13 +1,15 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { colors } from "../../constants/colors";
 import { HistoryIcon } from "../History/HistoryIcon";
 import { HistoryLayer } from "../History/HistoryLayer";
 import { Txt } from "../Txt";
 import { keyframes } from "@emotion/react";
+import { ModalContext } from "../../contexts/ModalContext";
 
 export function Header() {
   const [isHistoryLayerOpen, setIsHistoryLayerOpen] = useState(false);
-  const [historyData, setHistoryData] = useState<HistoryItemData[]>([]);
+  // const [historyData, setHistoryData] = useState<HistoryItemData[]>([]);
+  const { historyData, setHistoryData } = useContext(ModalContext)!;
   const [historyAnimation, setHistoryAnimation] = useState(slideInAnimation);
   const [isHistoryAnimationEnd, setIsHistoryAnimationEnd] = useState(false);
 

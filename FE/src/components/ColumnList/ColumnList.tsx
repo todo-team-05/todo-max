@@ -8,6 +8,7 @@ export function ColumnList({ data }: { data: MainPageData | undefined }) {
         display: "flex",
         width: "1280px",
         position: "relative",
+        top: "32px",
         gap: "24px",
       }}>
       {data?.map((column) => <ColumnWrapper key={column.id} column={column} />)}
