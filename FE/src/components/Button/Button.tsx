@@ -1,6 +1,7 @@
 import { Txt } from "../Txt";
 
 type Props = {
+  onClick?: () => void;
   text: string;
   width: string;
   height: string;
@@ -8,10 +9,19 @@ type Props = {
   backgroundColor: string;
 };
 
-export function Button({ text, width, height, color, backgroundColor }: Props) {
+export function Button({
+  onClick,
+  text,
+  width,
+  height,
+  color,
+  backgroundColor,
+}: Props) {
   return (
     <button
+      onClick={onClick}
       css={{
+        cursor: "pointer",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
