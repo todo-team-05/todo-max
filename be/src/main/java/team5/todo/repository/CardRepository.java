@@ -57,4 +57,11 @@ public class CardRepository {
 		params.addValue("id", id);
 		return namedParameterJdbcTemplate.queryForObject(sql, params, cardRowMapper());
 	}
+
+	public long deleteById(long id){
+		String sql = "DELETE FROM card WHERE id = :id";
+		MapSqlParameterSource params = new MapSqlParameterSource("id", id);
+		namedParameterJdbcTemplate.update(sql, params);
+		return id;
+	}
 }

@@ -80,4 +80,10 @@ public class CardRepositoryTest {
 				() -> Assertions.assertEquals(testContents, actual.getContents())
 		);
 	}
+
+	@Test
+	@DisplayName("저장된 카드가 삭제된다.")
+	void deleteCardTest(){
+
+	}
 }
