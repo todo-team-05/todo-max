@@ -2,7 +2,17 @@ import { colors } from "../../constants/colors";
 import { Button } from "../Button/Button";
 import { Txt } from "../Txt";
 
-export function Alert() {
+type Props = {
+  text: string;
+  leftButtonLabel: string;
+  rightButtonLabel: string;
+};
+
+export function Alert({
+  text,
+  leftButtonLabel = "취소",
+  rightButtonLabel = "삭제",
+}: Props) {
   return (
     <div
       css={{
@@ -19,7 +29,7 @@ export function Alert() {
           width: "272px",
         }}>
         <Txt typography="displayMedium16" color={`${colors.textDefault}`}>
-          안내 문구를 이렇게 표기합니다
+          {text}
         </Txt>
       </div>
       <div
@@ -28,14 +38,14 @@ export function Alert() {
           gap: "8px",
         }}>
         <Button
-          text="Button"
+          text={leftButtonLabel}
           width="132px"
           height="32px"
           color={`${colors.textDefault}`}
           backgroundColor={`${colors.surfaceAlt}`}
         />
         <Button
-          text="Button"
+          text={rightButtonLabel}
           width="132px"
           height="32px"
           color={`${colors.textWhiteWeak}`}
