@@ -5,8 +5,8 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
-import team5.todo.card.repository.CardRepository;
-import team5.todo.card.repository.CategoryRepository;
+import team5.todo.repository.CardRepository;
+import team5.todo.repository.CategoryRepository;
 import team5.todo.controller.dto.CardResponse;
 import team5.todo.controller.dto.CategoryResponse;
 import team5.todo.domain.Card;

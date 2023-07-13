@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import team5.todo.annotation.RepositoryTest;
-import team5.todo.card.repository.CategoryRepository;
 import team5.todo.domain.Category;
 
 @RepositoryTest

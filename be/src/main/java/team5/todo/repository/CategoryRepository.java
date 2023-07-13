@@ -1,4 +1,4 @@
-package team5.todo.card.repository;
+package team5.todo.repository;
 
 import java.util.List;
 
