@@ -1,10 +1,10 @@
 import { keyframes } from "@emotion/react";
 import { colors } from "../../constants/colors";
-import { CloseButton } from "../Button/CloseButton";
 import { Txt } from "../Txt";
 import { HistoryItem } from "./HistoryItem";
 import { HistoryLayerFooter } from "./HistoryLayerFooter";
 import { NoHistory } from "./NoHistory";
+import { IconButton } from "../Button/IconButton";
 
 export type HistoryItemData = {
   title: string;
@@ -87,7 +87,12 @@ export function HistoryLayer({
             padding: "0 4px 0 4px",
             cursor: "pointer",
           }}>
-          <CloseButton />
+          <IconButton
+            type="close"
+            width="24px"
+            height="24px"
+            color={colors.textWeak}
+          />
           <div css={{ width: "33px", height: "17px" }}>
             <Txt typography="displayBold14" color={`${colors.textDefault}`}>
               닫기
