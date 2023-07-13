@@ -21,9 +21,6 @@ public class CardResponse {
 		private String title;
 		private String contents;
 
-		public Builder() {
-		}
-
 		public Builder id(Long id) {
 			this.id = id;
 			return this;
@@ -56,6 +53,10 @@ public class CardResponse {
 		this.contents = builder.contents;
 	}
 
+	public static Builder builder() {
+		return new Builder();
+	}
+
 	public static Map<Long, List<CardResponse>> from(List<Card> cards) {
 		return cards.stream()
 			.map(CardResponse::from)
@@ -66,7 +67,7 @@ public class CardResponse {
 	}
 
 	public static CardResponse from(Card card) {
-		return new Builder()
+		return CardResponse.builder()
 			.id(card.getId())
 			.categoryId(card.getCategoryId())
 			.title(card.getTitle())
