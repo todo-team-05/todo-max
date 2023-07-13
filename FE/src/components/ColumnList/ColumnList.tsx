@@ -1,6 +1,7 @@
+import { MainPageData } from "../../pages/MainPage";
 import { ColumnWrapper } from "./ColumnWrapper";
 
-export function ColumnList() {
+export function ColumnList({ data }: { data: MainPageData | undefined }) {
   return (
     <div
       css={{
@@ -9,9 +10,10 @@ export function ColumnList() {
         position: "relative",
         gap: "24px",
       }}>
-      <ColumnWrapper />
-      <ColumnWrapper />
-      <ColumnWrapper />
+      {data?.map((column) => <ColumnWrapper key={column.id} column={column} />)}
+      {/* <ColumnWrapper /> */}
+      {/* <ColumnWrapper /> */}
+      {/* <ColumnWrapper /> */}
     </div>
   );
 }
