@@ -1,7 +1,8 @@
 import { colors } from "../../constants/colors";
 import { Txt } from "../Txt";
+import { HistoryItemData } from "./HistoryLayer";
 
-export function HistoryItem() {
+export function HistoryItem({ history }: { history: HistoryItemData }) {
   return (
     <div
       css={{
@@ -55,15 +56,12 @@ export function HistoryItem() {
         <div
           className="historyBodyText"
           css={{
-            display: "flex",
-            flexWrap: "wrap",
+            // display: "flex",
+            // flexWrap: "wrap",
             color: colors.textDefault,
             fontSize: "14px",
-            // width: "260px",
-            // height: "34px",
           }}>
-          끝내주게 숨쉬기/을(를) /하고있는 일/에서 /해야할 일/으로
-          /이동/하였습니다.
+          {generateHistoryText(history)}
         </div>
         <div
           className="historyBodyTime"
@@ -80,3 +78,48 @@ export function HistoryItem() {
     </div>
   );
 }
+
+const generateHistoryText = (history: HistoryItemData) => {
+  const boldStyle = {
+    fontSize: "14px",
+    fontWeight: 700,
+    letterSpacing: "0em",
+    color: "#4E4B66",
+  };
+  switch (history.action) {
+    case "생성":
+      return (
+        <>
+          <span style={boldStyle}>{history.title}</span>을(를){" "}
+          <span style={boldStyle}>{history.at}</span>에{" "}
+          <span style={boldStyle}>{history.action}</span>하였습니다.
+        </>
+      );
+    case "삭제":
+      return (
+        <>
+          <span style={boldStyle}>{history.title}</span>을(를){" "}
+          <span style={boldStyle}>{history.at}</span>에서{" "}
+          <span style={boldStyle}>{history.action}</span>하였습니다.
+        </>
+      );
+    case "변경":
+      return (
+        <>
+          <span style={boldStyle}>{history.title}</span>을(를){" "}
+          <span style={boldStyle}>{history.action}</span>하였습니다.
+        </>
+      );
+    case "이동":
+      return (
+        <>
+          <span style={boldStyle}>{history.title}</span>을(를){" "}
+          <span style={boldStyle}>{history.from}</span>
+          에서 <span style={boldStyle}>{history.to}</span>로{" "}
+          <span style={boldStyle}>{history.action}</span>하였습니다.
+        </>
+      );
+    default:
+      return null;
+  }
+};
