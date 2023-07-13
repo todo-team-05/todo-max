@@ -9,6 +9,7 @@ export function CloseButton() {
         height: "24px",
         backgroundColor: "transparent",
         border: "none",
+        cursor: "pointer",
       }}>
       <img src="/icons/close.svg" alt="닫기" />
     </button>
