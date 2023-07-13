@@ -3,8 +3,8 @@ package team5.todo.controller;
 import org.springframework.web.bind.annotation.*;
 import team5.todo.controller.dto.CardDeleteRequest;
 import team5.todo.controller.dto.CardSaveRequest;
+import team5.todo.controller.dto.CardModifyRequest;
 import team5.todo.service.CardService;
-import team5.todo.repository.CardRepository;
 
 @RestController
 @RequestMapping("/card")
@@ -24,5 +24,10 @@ public class CardController {
     @DeleteMapping
     public void delete(@RequestBody final CardDeleteRequest cardDeleteRequest) {
         cardService.delete(cardDeleteRequest);
+    }
+
+    @PutMapping("/modify")
+    public void modify(@RequestBody final CardModifyRequest cardModifyRequest) {
+        cardService.modify(cardModifyRequest);
     }
 }

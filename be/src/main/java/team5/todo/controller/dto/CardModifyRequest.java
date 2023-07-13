@@ -2,22 +2,22 @@ package team5.todo.controller.dto;
 
 import team5.todo.domain.Card;
 
-public class CardSaveRequest {
+public class CardModifyRequest {
 
-    private final Long categoryId;
+    private final Long id;
     private final String title;
     private final String contents;
 
     public static class Builder {
 
-        private Long categoryId;
+        private Long id;
         private String title;
         private String contents;
 
         private Builder() {}
 
-        public Builder categoryId(Long categoryId) {
-            this.categoryId = categoryId;
+        public Builder id(Long id) {
+            this.id= id;
             return this;
         }
 
@@ -31,31 +31,31 @@ public class CardSaveRequest {
             return this;
         }
 
-        public CardSaveRequest build() {
-            return new CardSaveRequest(this);
+        public CardModifyRequest build() {
+            return new CardModifyRequest(this);
         }
     }
 
-    private CardSaveRequest(Builder builder) {
-        this.categoryId = builder.categoryId;
+    private CardModifyRequest(Builder builder) {
+        this.id = builder.id;
         this.title = builder.title;
         this.contents = builder.contents;
     }
-
+    
     public static Builder builder() {
         return new Builder();
     }
 
     public Card toCard() {
         return Card.builder()
-                .categoryId(categoryId)
+                .id(id)
                 .title(title)
                 .contents(contents)
                 .build();
     }
 
-    public Long getCategoryId() {
-        return categoryId;
+    public Long getId() {
+        return id;
     }
 
     public String getTitle() {

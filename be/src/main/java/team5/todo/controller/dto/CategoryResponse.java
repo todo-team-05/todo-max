@@ -18,6 +18,8 @@ public class CategoryResponse {
 		private String name;
 		private List<CardResponse> cardResponses;
 
+		private Builder() {}
+
 		public Builder id(Long id) {
 			this.id = id;
 			return this;
