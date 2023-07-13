@@ -6,9 +6,11 @@ import { Badge } from "./Badge";
 export function ColumnTitle({
   columnTitle,
   cardsCount,
+  showAddCard,
 }: {
   columnTitle: string;
   cardsCount: number;
+  showAddCard(): void;
 }) {
   return (
     <div css={ColumnTitleContainer}>
@@ -23,6 +25,7 @@ export function ColumnTitle({
         width="24px"
         height="24px"
         color={colors.textWeak}
+        onClick={showAddCard}
       />
       <IconButton
         type="close"
