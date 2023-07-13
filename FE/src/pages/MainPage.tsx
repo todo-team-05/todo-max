@@ -3,27 +3,13 @@ import { ColumnList } from "../components/ColumnList/ColumnList";
 import { Header } from "../components/Header/Header";
 import { colors } from "../constants/colors";
 
-export type Card = {
-  id: number;
-  title: string;
-  contents: string;
-};
-
-export type Column = {
-  id: number;
-  name: string;
-  cards: Card[];
-};
-
-export type MainPageData = Column[];
-
 export function MainPage() {
   const [mainPageData, setMainPageData] = useState<MainPageData>();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:8080/index");
+        const response = await fetch("/index");
         const data = await response.json();
         setMainPageData(data);
       } catch (error) {
@@ -51,3 +37,17 @@ export function MainPage() {
     </div>
   );
 }
+
+export type Card = {
+  id: number;
+  title: string;
+  contents: string;
+};
+
+export type Column = {
+  id: number;
+  name: string;
+  cards: Card[];
+};
+
+export type MainPageData = Column[];
