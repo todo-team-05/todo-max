@@ -1,6 +1,5 @@
 import { colors } from "../../constants/colors";
-import { CloseButton } from "../Button/CloseButton";
-import { PlusButton } from "../Button/PlusButton";
+import { IconButton } from "../Button/IconButton";
 import { Txt } from "../Txt";
 import { Badge } from "./Badge";
 
@@ -19,8 +18,18 @@ export function ColumnTitle({
         </Txt>
         <Badge cardsCount={cardsCount} />
       </div>
-      <PlusButton />
-      <CloseButton />
+      <IconButton
+        type="plus"
+        width="24px"
+        height="24px"
+        color={colors.textWeak}
+      />
+      <IconButton
+        type="close"
+        width="24px"
+        height="24px"
+        color={colors.textWeak}
+      />
     </div>
   );
 }

@@ -29,11 +29,15 @@ export function Alert() {
         }}>
         <Button
           text="Button"
+          width="132px"
+          height="32px"
           color={`${colors.textDefault}`}
           backgroundColor={`${colors.surfaceAlt}`}
         />
         <Button
           text="Button"
+          width="132px"
+          height="32px"
           color={`${colors.textWhiteWeak}`}
           backgroundColor={`${colors.textDanger}`}
         />
