@@ -8,11 +8,13 @@ type Props = {
   width: string;
   height: string;
   color: string;
+  onClick?(): void;
 };
 
-export function IconButton({ type, width, height, color }: Props) {
+export function IconButton({ type, width, height, color, onClick }: Props) {
   return (
     <button
+      onClick={onClick}
       css={{
         padding: "0px",
         display: "flex",
