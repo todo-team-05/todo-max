@@ -1,24 +1,20 @@
-import { keyframes } from "@emotion/react";
 import { colors } from "../../constants/colors";
 import { Txt } from "../Txt";
 import { HistoryItem } from "./HistoryItem";
 import { HistoryLayerFooter } from "./HistoryLayerFooter";
 import { NoHistory } from "./NoHistory";
 import { IconButton } from "../Button/IconButton";
-
-export type HistoryItemData = {
-  title: string;
-  from: string;
-  to: string;
-  at: string;
-  action: string;
-};
+import { HistoryItemData } from "../Header/Header";
 
 export function HistoryLayer({
+  onAnimationEnd,
+  animation,
   historyData,
   onClickCloseButton,
 }: {
-  historyData: any;
+  onAnimationEnd: () => void;
+  animation: { animation: string };
+  historyData: HistoryItemData[];
   onClickCloseButton: () => void;
 }) {
   console.log(historyData);
@@ -28,17 +24,16 @@ export function HistoryLayer({
 
   return (
     <div
+      onAnimationEnd={onAnimationEnd}
       css={{
-        animation: `${slideIn} 0.3s ease-out forwards`,
+        ...animation,
         display: "flex",
         position: "absolute",
         flexDirection: "column",
         justifyContent: "space-evenly",
         alignItems: "center",
-
         top: "64px",
         left: "50%",
-        // transform: "translateX(298px)",
         width: "366px",
         minHeight: "121px",
         maxHeight: "680px",
@@ -59,7 +54,6 @@ export function HistoryLayer({
           width: "350px",
           height: "48px",
           lineHeight: "19.09px",
-          // padding: "0 8px",
           boxSizing: "border-box",
           padding: "8px 8px 8px 16px",
           gap: "4px",
@@ -137,12 +131,3 @@ export function HistoryLayer({
     </div>
   );
 }
-
-const slideIn = keyframes`
-  0% {
-    transform: translateX(150%);
-  }
-  100% {
-    transform: translateX(298px);
-  }
-`;
