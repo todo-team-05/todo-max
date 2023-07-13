@@ -1,7 +1,16 @@
+import { useContext } from "react";
 import { colors } from "../../constants/colors";
 import { Txt } from "../Txt";
+import { ModalContext } from "../../contexts/ModalContext";
 
 export function HistoryLayerFooter() {
+  const modalContextValue = useContext(ModalContext);
+  const { setIsAlertOpen } = modalContextValue!;
+
+  const handleClickDeleteAllButton = () => {
+    setIsAlertOpen(true);
+  };
+
   return (
     <div
       className="HistoryLayerFooter"
@@ -13,9 +22,11 @@ export function HistoryLayerFooter() {
         height: "48px",
         padding: "0 20px 0 0",
       }}>
-      <Txt typography="displayBold14" color={`${colors.textDanger}`}>
-        기록 전체 삭제
-      </Txt>
+      <div css={{ cursor: "pointer" }} onClick={handleClickDeleteAllButton}>
+        <Txt typography="displayBold14" color={`${colors.textDanger}`}>
+          기록 전체 삭제
+        </Txt>
+      </div>
     </div>
   );
 }
