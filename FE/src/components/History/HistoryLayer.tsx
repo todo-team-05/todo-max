@@ -1,20 +1,44 @@
+import { keyframes } from "@emotion/react";
 import { colors } from "../../constants/colors";
 import { CloseButton } from "../Button/CloseButton";
 import { Txt } from "../Txt";
 import { HistoryItem } from "./HistoryItem";
+import { HistoryLayerFooter } from "./HistoryLayerFooter";
+import { NoHistory } from "./NoHistory";
 
-export function HistoryLayer() {
+export type HistoryItemData = {
+  title: string;
+  from: string;
+  to: string;
+  at: string;
+  action: string;
+};
+
+export function HistoryLayer({
+  historyData,
+  onClickCloseButton,
+}: {
+  historyData: any;
+  onClickCloseButton: () => void;
+}) {
+  console.log(historyData);
+
+  const hasHistory = historyData && historyData.length > 0;
+  console.log(hasHistory);
+
   return (
     <div
       css={{
+        animation: `${slideIn} 0.3s ease-out forwards`,
         display: "flex",
-        flexDirection: "column",
-        // justifyContent: "space-evenly",
-        alignItems: "center",
         position: "absolute",
+        flexDirection: "column",
+        justifyContent: "space-evenly",
+        alignItems: "center",
+
         top: "64px",
         left: "50%",
-        transform: "translateX(298px)",
+        // transform: "translateX(298px)",
         width: "366px",
         minHeight: "121px",
         maxHeight: "680px",
@@ -53,6 +77,7 @@ export function HistoryLayer() {
           </Txt>
         </div>
         <div
+          onClick={onClickCloseButton}
           css={{
             display: "flex",
             justifyContent: "center",
@@ -60,6 +85,7 @@ export function HistoryLayer() {
             width: "65px",
             height: "32px",
             padding: "0 4px 0 4px",
+            cursor: "pointer",
           }}>
           <CloseButton />
           <div css={{ width: "33px", height: "17px" }}>
@@ -75,61 +101,43 @@ export function HistoryLayer() {
           "display": "flex",
           "flexDirection": "column",
           "& > :not(:last-child)": {
-            borderBottom: `1px solid ${colors.borderDefault}`, // or use your preferred color
+            borderBottom: `1px solid ${colors.borderDefault}`,
           },
           "boxSizing": "border-box",
           "maxHeight": "683px",
           "overflow": "auto",
           "overflowX": "hidden",
+          "justifyContent": "center",
 
           "&::-webkit-scrollbar": {
-            width: "6px", // 스크롤바 너비를 조절하는 부분입니다. 원하는 크기로 변경하세요.
+            width: "6px",
           },
           "&::-webkit-scrollbar-thumb": {
-            backgroundColor: colors.borderDefault, // 스크롤바의 색상을 변경하는 부분입니다. 원하는 색상으로 변경하세요.
+            backgroundColor: colors.borderDefault,
           },
           "&::-webkit-scrollbar-thumb:hover": {
-            backgroundColor: colors.gray400, // 스크롤바를 hover 했을 때의 색상입니다. 원하는 색상으로 변경하세요.
+            backgroundColor: colors.gray400,
           },
         }}>
-        {/* <div
-          className="noHistory"
-          css={{
-            width: "350px",
-            height: "49px",
-            padding: "16px",
-            gap: "4px",
-          }}>
-          <div
-            css={{
-              width: "318px",
-              height: "17px",
-            }}>
-            <Txt typography="displayMedium14" color={`${colors.textWeak}`}>
-              사용자 활동 기록이 없습니다.
-            </Txt>
-          </div>
-        </div> */}
-        <HistoryItem />
-        <HistoryItem />
-        <HistoryItem />
-        <HistoryItem />
-        {/* <HistoryItem /> */}
+        {hasHistory ? (
+          historyData.map((history: HistoryItemData) => {
+            console.log(history);
+            return <HistoryItem history={history} />;
+          })
+        ) : (
+          <NoHistory />
+        )}
       </div>
-      <div
-        className="HistoryLayerFooter"
-        css={{
-          display: "flex",
-          justifyContent: "flex-end",
-          alignItems: "center",
-          width: "330px",
-          height: "48px",
-          padding: "0 20px 0 0",
-        }}>
-        <Txt typography="displayBold14" color={`${colors.textDanger}`}>
-          기록 전체 삭제
-        </Txt>
-      </div>
+      {hasHistory ? <HistoryLayerFooter /> : null}
     </div>
   );
 }
+
+const slideIn = keyframes`
+  0% {
+    transform: translateX(150%);
+  }
+  100% {
+    transform: translateX(298px);
+  }
+`;
