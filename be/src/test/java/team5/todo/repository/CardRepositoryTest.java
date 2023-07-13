@@ -61,7 +61,7 @@ public class CardRepositoryTest {
 		//given
 		String testTitle = "save test1";
 		String testContents = "save test contents";
-		Card card = new Card.Builder()
+		Card card = Card.builder()
 				.categoryId(1L)
 				.title(testTitle)
 				.contents(testContents)
@@ -85,16 +85,46 @@ public class CardRepositoryTest {
 	@Test
 	@DisplayName("카드를 저장했을 때, 저장한 카드가 삭제된다.")
 	void deleteCardTest() {
-		Card card = new Card.Builder()
+		Card card = Card.builder()
 				.categoryId(1L)
 				.title("save test1")
 				.contents("save test contents")
 				.build();
 		Long saveResultId = cardRepository.save(card);
-		
-		cardRepository.deleteById(saveResultId);
+
+		cardRepository.delete(Card.builder().id(saveResultId).build());
 
 		assertThatThrownBy(() -> cardRepository.findById(saveResultId))
 				.isInstanceOf(EmptyResultDataAccessException.class);
+	}
+
+	@Test
+	@DisplayName("카드를 저장했을 때, 저장한 카드를 수정하면 수정된 데이터가 db에 반영된다.")
+	void updateCardTest(){
+		//given
+		Card original = Card.builder()
+				.categoryId(1L)
+				.title("original title")
+				.contents("original contents")
+				.build();
+		Long saveResultId = cardRepository.save(original);
+
+		String expectedTitle = "new title";
+		String expectedContents = "new contents";
+		Card updateRequest = Card.builder()
+				.id(saveResultId)
+				.title(expectedTitle)
+				.contents(expectedContents)
+				.build();
+
+		//when
+		cardRepository.modify(updateRequest);
+
+		//then
+		Card actual = cardRepository.findById(saveResultId);
+		Assertions.assertAll(
+				() -> Assertions.assertEquals(expectedTitle, actual.getTitle()),
+				() -> Assertions.assertEquals(expectedContents, actual.getContents())
+		);
 	}
 }

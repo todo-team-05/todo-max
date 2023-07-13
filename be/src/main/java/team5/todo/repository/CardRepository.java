@@ -1,6 +1,7 @@
 package team5.todo.repository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.sql.DataSource;
@@ -22,7 +23,7 @@ public class CardRepository {
 	}
 
 	private RowMapper<Card> cardRowMapper() {
-		return (rs, rowNum) -> new Card.Builder()
+		return (rs, rowNum) -> Card.builder()
 			.id(rs.getLong("id"))
 			.categoryId(rs.getLong("category_id"))
 			.position(rs.getDouble("position"))
@@ -59,10 +60,19 @@ public class CardRepository {
 		return namedParameterJdbcTemplate.queryForObject(sql, params, cardRowMapper());
 	}
 
-	public long deleteById(long id){
+	public void delete(Card card){
 		String sql = "DELETE FROM card WHERE id = :id";
-		MapSqlParameterSource params = new MapSqlParameterSource("id", id);
+		MapSqlParameterSource params = new MapSqlParameterSource("id", card.getId());
 		namedParameterJdbcTemplate.update(sql, params);
-		return id;
+	}
+
+	public void modify(Card card){
+		String sql = "UPDATE card SET title = :title , contents = :contents WHERE id = :id";
+		MapSqlParameterSource params = new MapSqlParameterSource();
+		params.addValue("title", card.getTitle());
+		params.addValue("contents", card.getContents());
+		params.addValue("id", card.getId());
+
+		namedParameterJdbcTemplate.update(sql, params);
 	}
 }
