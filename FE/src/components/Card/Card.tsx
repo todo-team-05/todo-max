@@ -1,8 +1,6 @@
 import { colors } from "../../constants/colors";
-
 import { Button } from "../Button/Button";
-import { CloseButton } from "../Button/CloseButton";
-import { EditButton } from "../Button/EditButton";
+import { IconButton } from "../Button/IconButton";
 import { Txt } from "../Txt";
 
 export function DefaultCard({
@@ -62,8 +60,18 @@ export function DefaultCard({
           </div>
         </div>
         <div>
-          <CloseButton />
-          <EditButton />
+          <IconButton
+            type="close"
+            width="24px"
+            height="24px"
+            color={colors.textWeak}
+          />
+          <IconButton
+            type="edit"
+            width="24px"
+            height="24px"
+            color={colors.textWeak}
+          />
         </div>
       </div>
       <div
@@ -73,11 +81,15 @@ export function DefaultCard({
         }}>
         <Button
           text="Button"
+          width="132px"
+          height="32px"
           color={`${colors.textDefault}`}
           backgroundColor={`${colors.surfaceAlt}`}
         />
         <Button
           text="Button"
+          width="132px"
+          height="32px"
           color={`${colors.textWhiteDefault}`}
           backgroundColor={`${colors.surfaceBrand}`}
         />
