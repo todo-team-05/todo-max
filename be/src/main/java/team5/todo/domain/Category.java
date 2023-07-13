@@ -10,6 +10,8 @@ public class Category {
 		private Long id;
 		private String name;
 
+		private Builder() {}
+
 		public Builder id(Long id) {
 			this.id = id;
 			return this;
@@ -30,7 +32,7 @@ public class Category {
 		this.name = builder.name;
 	}
 
-	public Builder builder() {
+	public static Builder builder() {
 		return new Builder();
 	}
 
