@@ -11,6 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import team5.todo.annotation.RepositoryTest;
@@ -82,8 +83,18 @@ public class CardRepositoryTest {
 	}
 
 	@Test
-	@DisplayName("저장된 카드가 삭제된다.")
-	void deleteCardTest(){
+	@DisplayName("카드를 저장했을 때, 저장한 카드가 삭제된다.")
+	void deleteCardTest() {
+		Card card = new Card.Builder()
+				.categoryId(1L)
+				.title("save test1")
+				.contents("save test contents")
+				.build();
+		Long saveResultId = cardRepository.save(card);
+		
+		cardRepository.deleteById(saveResultId);
 
+		assertThatThrownBy(() -> cardRepository.findById(saveResultId))
+				.isInstanceOf(EmptyResultDataAccessException.class);
 	}
 }

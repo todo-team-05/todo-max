@@ -1,6 +1,7 @@
 package team5.todo.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.sql.DataSource;
 
@@ -51,7 +52,7 @@ public class CardRepository {
 		return keyHolder.getKey().longValue();
 	}
 
-	public Card findById(long id){
+	public Card findById(long id) {
 		String sql = "SELECT id, category_id, position, title, contents FROM card WHERE id = :id";
 		MapSqlParameterSource params = new MapSqlParameterSource();
 		params.addValue("id", id);
