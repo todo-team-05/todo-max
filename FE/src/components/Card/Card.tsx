@@ -1,10 +1,17 @@
 import { colors } from "../../constants/colors";
+
 import { Button } from "../Button/Button";
 import { CloseButton } from "../Button/CloseButton";
 import { EditButton } from "../Button/EditButton";
 import { Txt } from "../Txt";
 
-export function DefaultCard() {
+export function DefaultCard({
+  cardTitle,
+  cardContent,
+}: {
+  cardTitle: string;
+  cardContent: string;
+}) {
   return (
     <div
       css={{
@@ -13,6 +20,9 @@ export function DefaultCard() {
         width: "268px",
         padding: "16px",
         gap: "16px",
+        backgroundColor: `${colors.surfaceDefault}`,
+        borderRadius: "8px",
+        boxShadow: "0px 1px 4px 0px #6E80913D",
       }}>
       <div
         css={{
@@ -34,12 +44,14 @@ export function DefaultCard() {
             }}>
             <div contentEditable="false">
               <Txt typography="displayBold14" color={colors.textStrong}>
-                Title
+                {/* Title */}
+                {cardTitle}
               </Txt>
             </div>
             <div contentEditable="false">
               <Txt typography="displayMedium14" color={colors.textDefault}>
-                Body
+                {/* Body */}
+                {cardContent}
               </Txt>
             </div>
           </div>
