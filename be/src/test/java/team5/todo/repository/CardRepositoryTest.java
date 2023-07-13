@@ -6,22 +6,26 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import team5.todo.annotation.RepositoryTest;
-import team5.todo.card.repository.CardRepository;
 import team5.todo.domain.Card;
 
 @RepositoryTest
 public class CardRepositoryTest {
 
 	private final CardRepository cardRepository;
+	private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
 	@Autowired
 	public CardRepositoryTest(DataSource dataSource) {
 		this.cardRepository = new CardRepository(dataSource);
+		this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
 	}
 
 	@Test
@@ -30,7 +34,6 @@ public class CardRepositoryTest {
 		//given
 		//when
 		List<Card> actualCards = cardRepository.findAll();
-
 		//then
 		assertThat(actualCards.size()).isEqualTo(3);
 
@@ -49,5 +52,32 @@ public class CardRepositoryTest {
 		assertThat(actualCards.get(2).getTitle()).isEqualTo("제목1");
 		assertThat(actualCards.get(2).getContents()).isEqualTo("내용1");
 
+	}
+
+	@Test
+	@DisplayName("테스트 데이터가 card 테이블에 저장된다.")
+	void saveCardTest(){
+		//given
+		String testTitle = "save test1";
+		String testContents = "save test contents";
+		Card card = new Card.Builder()
+				.categoryId(1L)
+				.title(testTitle)
+				.contents(testContents)
+				.build();
+		String sql = "SELECT IFNULL(MAX(position), 0) FROM card WHERE category_id = 1";
+		Double maxPosition = namedParameterJdbcTemplate.queryForObject(sql,new MapSqlParameterSource(), Double.class);
+
+		//when
+		Long saveResultId = cardRepository.save(card);
+
+		//then
+		Card actual = cardRepository.findById(saveResultId);
+		Assertions.assertAll(
+				() -> Assertions.assertEquals(1L, actual.getCategoryId()),
+				() -> Assertions.assertEquals(maxPosition + 1000, actual.getPosition()),
+				() -> Assertions.assertEquals(testTitle, actual.getTitle()),
+				() -> Assertions.assertEquals(testContents, actual.getContents())
+		);
 	}
 }

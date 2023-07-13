@@ -18,9 +18,6 @@ public class CategoryResponse {
 		private String name;
 		private List<CardResponse> cardResponses;
 
-		public Builder() {
-		}
-
 		public Builder id(Long id) {
 			this.id = id;
 			return this;
@@ -47,6 +44,10 @@ public class CategoryResponse {
 		this.cardResponses = builder.cardResponses;
 	}
 
+	public static Builder builder() {
+		return new Builder();
+	}
+
 	public static List<CategoryResponse> of(List<Category> categories,
 		Map<Long, List<CardResponse>> cardResponses) {
 		return categories.stream()
@@ -55,7 +56,7 @@ public class CategoryResponse {
 	}
 
 	public static CategoryResponse of(Category category, Map<Long, List<CardResponse>> cardResponses) {
-		return new Builder()
+		return CategoryResponse.builder()
 			.id(category.getId())
 			.name(category.getName())
 			.cardResponses(cardResponses.get(category.getId()))
