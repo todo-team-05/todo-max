@@ -7,7 +7,7 @@
 | 2    |                                                |                                                  |
 | 3    |  |  |
 | 4    |  |  |
-| 5    |  |  |
+| 5    |나그, 박하, litae, 무비, 보노, 파이|https://github.com/todo-team-05/todo-max|
 | 6    |  |  |
 
 * 팀 정보를 업데이트해서 main 브랜치로 PR 보내 주세요.
