@@ -5,9 +5,10 @@ import { ModalContext } from "../../contexts/ModalContext";
 
 export function HistoryLayerFooter() {
   const modalContextValue = useContext(ModalContext);
-  const { setIsAlertOpen } = modalContextValue!;
+  const { setIsAlertOpen, setAlertType } = modalContextValue!;
 
   const handleClickDeleteAllButton = () => {
+    setAlertType("removeHistory");
     setIsAlertOpen(true);
   };
 
@@ -23,7 +24,7 @@ export function HistoryLayerFooter() {
         padding: "0 20px 0 0",
       }}>
       <div css={{ cursor: "pointer" }} onClick={handleClickDeleteAllButton}>
-        <Txt typography="displayBold14" color={`${colors.textDanger}`}>
+        <Txt typography="displayBold14" color={colors.textDanger}>
           기록 전체 삭제
         </Txt>
       </div>

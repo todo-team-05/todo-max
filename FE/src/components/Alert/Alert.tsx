@@ -3,25 +3,31 @@ import { colors } from "../../constants/colors";
 import { ModalContext } from "../../contexts/ModalContext";
 import { Button } from "../Button/Button";
 import { Txt } from "../Txt";
+import { shadow } from "../../constants/shadow";
 
 type Props = {
   onClickLeftButton: () => void;
-  text: string;
   leftButtonLabel: string;
   rightButtonLabel: string;
 };
 
 export function Alert({
   onClickLeftButton,
-  text,
   leftButtonLabel = "취소",
   rightButtonLabel = "삭제",
 }: Props) {
-  const { setIsAlertOpen, setHistoryData } = useContext(ModalContext)!;
+  const { setIsAlertOpen, setHistoryData, alertType, setRemoveCardState } =
+    useContext(ModalContext)!;
 
   const handleClickRightButton = () => {
-    setHistoryData([]);
-    setIsAlertOpen(false);
+    if (alertType === "removeHistory") {
+      setHistoryData([]);
+      setIsAlertOpen(false);
+    }
+    if (alertType === "removeCard") {
+      setRemoveCardState(true);
+      setRemoveCardState(false);
+    }
   };
 
   return (
@@ -42,14 +48,16 @@ export function Alert({
         gap: "24px",
         width: "272px",
         height: "78px",
-        boxShadow: "0px 2px 8px 0px #6E809129, 0px 2px 8px 0px #6E809129",
+        boxShadow: shadow.up,
       }}>
       <div
         css={{
           width: "272px",
         }}>
         <Txt typography="displayMedium16" color={`${colors.textDefault}`}>
-          {text}
+          {alertType === "removeCard"
+            ? "선택한 카드를 삭제할까요?"
+            : "모든 사용자 활동 기록을 삭제할까요?"}
         </Txt>
       </div>
       <div
