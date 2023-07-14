@@ -76,8 +76,8 @@ export function Header() {
 
 export type HistoryItemData = {
   title: string;
-  from: string;
-  to: string;
+  from?: string;
+  to?: string;
   at: string;
   action: string;
 };

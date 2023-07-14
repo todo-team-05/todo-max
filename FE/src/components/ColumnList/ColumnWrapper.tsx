@@ -1,14 +1,16 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Card, Column } from "../../pages/MainPage";
-import { DefaultCard } from "../Card/Card";
+import { DefaultCard } from "../Card/DefaultCard";
 import { ColumnTitle } from "./ColumnTitle";
 import { AddCard } from "../Card/AddCard";
+import { ModalContext } from "../../contexts/ModalContext";
 
 export function ColumnWrapper({ column }: { column: Column }) {
+  const { setIsAlertOpen, setHistoryData, setAlertType } =
+    useContext(ModalContext)!;
   const [isAddCard, setIsAddCard] = useState<boolean>(false);
   const [cardsList, setCardsList] = useState<Card[]>(column.cards); // column.cards
   const columnTitle = column.name;
-  const cardsCount = column.cards.length;
 
   // const cardsCount = 10; // 두자리 수 모킹 값
   const showAddCard = () => {
@@ -17,6 +19,41 @@ export function ColumnWrapper({ column }: { column: Column }) {
 
   const closeAddCard = () => {
     setIsAddCard(false);
+  };
+
+  const addNewCard = (inputTitle: string, inputContent: string) => {
+    const newCard = {
+      id: Date.now(),
+      title: inputTitle,
+      contents: inputContent,
+    };
+
+    const newHistory = {
+      title: inputTitle,
+      at: columnTitle,
+      action: "생성",
+    };
+
+    setHistoryData((prevHistoryData) => [newHistory, ...prevHistoryData]);
+    setCardsList((prevCardsList) => [newCard, ...prevCardsList]);
+    closeAddCard();
+  };
+
+  const removeCard = (key: number, cardTitle: string) => {
+    const filter = cardsList.filter((list) => list.id !== key);
+    const newHistory = {
+      title: cardTitle,
+      at: columnTitle,
+      action: "삭제",
+    };
+
+    setHistoryData((prevHistoryData) => [newHistory, ...prevHistoryData]);
+    setCardsList(filter);
+  };
+
+  const openRemoveCardModal = () => {
+    setAlertType("removeCard");
+    setIsAlertOpen(true);
   };
 
   return (
@@ -30,15 +67,20 @@ export function ColumnWrapper({ column }: { column: Column }) {
       }}>
       <ColumnTitle
         columnTitle={columnTitle}
-        cardsCount={cardsCount}
+        cardsCount={cardsList.length}
         showAddCard={showAddCard}
       />
-      {isAddCard && <AddCard closeAddCard={closeAddCard} />}
+      {isAddCard && (
+        <AddCard closeAddCard={closeAddCard} addNewCard={addNewCard} />
+      )}
       {cardsList.map((card) => (
         <DefaultCard
           key={card.id}
+          id={card.id}
           cardTitle={card.title}
           cardContent={card.contents}
+          removeCard={removeCard}
+          openRemoveCardModal={openRemoveCardModal}
         />
       ))}
     </div>
