@@ -1,15 +1,24 @@
 import { colors } from "../../constants/colors";
-import { Button } from "../Button/Button";
 import { IconButton } from "../Button/IconButton";
 import { Txt } from "../Txt";
+import { getUserDevice } from "../../utils/getUserDevice";
+import { shadow } from "../../constants/shadow";
 
 export function DefaultCard({
+  id,
   cardTitle,
   cardContent,
+  removeCard,
 }: {
+  id: number;
   cardTitle: string;
   cardContent: string;
+  removeCard(key: number, cardTitle: string): void;
 }) {
+  const handleRemoveCard = () => {
+    removeCard(id, cardTitle);
+  };
+
   return (
     <div
       css={{
@@ -18,9 +27,9 @@ export function DefaultCard({
         width: "268px",
         padding: "16px",
         gap: "16px",
-        backgroundColor: `${colors.surfaceDefault}`,
+        backgroundColor: colors.surfaceDefault,
         borderRadius: "8px",
-        boxShadow: "0px 1px 4px 0px #6E80913D",
+        boxShadow: shadow.normal,
       }}>
       <div
         css={{
@@ -40,22 +49,20 @@ export function DefaultCard({
               flexDirection: "column",
               gap: "8px",
             }}>
-            <div contentEditable="false">
+            <div>
               <Txt typography="displayBold14" color={colors.textStrong}>
-                {/* Title */}
                 {cardTitle}
               </Txt>
             </div>
-            <div contentEditable="false">
+            <div>
               <Txt typography="displayMedium14" color={colors.textDefault}>
-                {/* Body */}
                 {cardContent}
               </Txt>
             </div>
           </div>
           <div>
             <Txt typography="displayMedium12" color={colors.textWeak}>
-              author by web
+              {`author by ${getUserDevice()}`}
             </Txt>
           </div>
         </div>
@@ -65,6 +72,7 @@ export function DefaultCard({
             width="24px"
             height="24px"
             color={colors.textWeak}
+            onClick={handleRemoveCard}
           />
           <IconButton
             type="edit"
@@ -73,26 +81,6 @@ export function DefaultCard({
             color={colors.textWeak}
           />
         </div>
-      </div>
-      <div
-        css={{
-          display: "flex",
-          gap: "8px",
-        }}>
-        <Button
-          text="Button"
-          width="132px"
-          height="32px"
-          color={`${colors.textDefault}`}
-          backgroundColor={`${colors.surfaceAlt}`}
-        />
-        <Button
-          text="Button"
-          width="132px"
-          height="32px"
-          color={`${colors.textWhiteDefault}`}
-          backgroundColor={`${colors.surfaceBrand}`}
-        />
       </div>
     </div>
   );

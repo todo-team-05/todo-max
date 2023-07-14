@@ -1,8 +1,15 @@
 import { useState } from "react";
 import { colors } from "../../constants/colors";
 import { Button } from "../Button/Button";
+import { shadow } from "../../constants/shadow";
 
-export function AddCard({ closeAddCard }: { closeAddCard(): void }) {
+export function AddCard({
+  closeAddCard,
+  addNewCard,
+}: {
+  closeAddCard(): void;
+  addNewCard(inputTitle: string, inputContent: string): void;
+}) {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
 
@@ -14,7 +21,10 @@ export function AddCard({ closeAddCard }: { closeAddCard(): void }) {
     setContent(e.target.value);
   };
 
-  const clickButton = () => {};
+  const clickButton = () => {
+    addNewCard(title, content);
+    closeAddCard();
+  };
 
   const isButtonDisabled = title.trim() === "" || content.trim() === "";
 
@@ -28,7 +38,7 @@ export function AddCard({ closeAddCard }: { closeAddCard(): void }) {
         gap: "16px",
         backgroundColor: `${colors.surfaceDefault}`,
         borderRadius: "8px",
-        boxShadow: "0px 1px 4px 0px #6E80913D",
+        boxShadow: shadow.normal,
       }}>
       <div
         css={{

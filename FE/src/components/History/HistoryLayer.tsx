@@ -5,6 +5,7 @@ import { HistoryLayerFooter } from "./HistoryLayerFooter";
 import { NoHistory } from "./NoHistory";
 import { IconButton } from "../Button/IconButton";
 import { HistoryItemData } from "../Header/Header";
+import { shadow } from "../../constants/shadow";
 
 export function HistoryLayer({
   onAnimationEnd,
@@ -42,7 +43,7 @@ export function HistoryLayer({
         padding: "8px",
         gap: "8px",
         backgroundColor: colors.surfaceDefault,
-        boxShadow: "0px 16px 16px 0px #6E80913D, 0px 0px 4px 0px #6E809114",
+        boxShadow: shadow.floating,
         zIndex: 3,
       }}>
       <div
