@@ -1,9 +1,8 @@
 # todo-max
 
-
-| team | members                | repository                                      |
-| ---- |------------------------| ----------------------------------------------- |
-| 1    |                        |                                                 |
+| team | members                             | repository |
+| ---- |-------------------------------------|------------|
+| 1    | 조이(Zoey), Jay, June, light, Fia, 만두 |https://github.com/todo-team-01/todo-max|
 | 2    |                        |                                                 |
 | 3    |                        | |
 | 4    | 설리, 찰리, 지안, 시오, 푸반, 아티 |https://github.com/masters2023-2nd-project-traveler/todo-max|
