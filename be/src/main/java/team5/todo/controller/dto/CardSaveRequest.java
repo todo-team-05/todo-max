@@ -36,6 +36,12 @@ public class CardSaveRequest {
         }
     }
 
+    private CardSaveRequest(Long categoryId, String title, String contents) {
+        this.categoryId = categoryId;
+        this.title = title;
+        this.contents = contents;
+    }
+
     private CardSaveRequest(Builder builder) {
         this.categoryId = builder.categoryId;
         this.title = builder.title;
