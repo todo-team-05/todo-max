@@ -50,6 +50,25 @@ export function ColumnWrapper({ column }: { column: Column }) {
     setCardsList(filter);
   };
 
+  const updateEditCard = (
+    inputTitle: string,
+    inputContent: string,
+    cardId: number
+  ) => {
+    setCardsList((prevCardsList) => {
+      return prevCardsList.map((card) => {
+        if (card.id === cardId) {
+          return {
+            ...card,
+            title: inputTitle,
+            contents: inputContent,
+          };
+        }
+        return card;
+      });
+    });
+  };
+
   return (
     <div
       css={{
@@ -74,6 +93,7 @@ export function ColumnWrapper({ column }: { column: Column }) {
           cardTitle={card.title}
           cardContent={card.contents}
           removeCard={removeCard}
+          updateEditCard={updateEditCard}
         />
       ))}
     </div>
