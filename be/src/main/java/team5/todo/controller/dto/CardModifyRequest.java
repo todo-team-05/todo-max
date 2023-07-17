@@ -36,6 +36,12 @@ public class CardModifyRequest {
         }
     }
 
+    private CardModifyRequest(Long id, String title, String contents) {
+        this.id = id;
+        this.title = title;
+        this.contents = contents;
+    }
+
     private CardModifyRequest(Builder builder) {
         this.id = builder.id;
         this.title = builder.title;
