@@ -1,9 +1,7 @@
 export const getUserDevice = () => {
   const userAgent = navigator.userAgent;
 
-  if (/Mobi/i.test(userAgent)) {
-    return "Mobile";
-  } else if (/iPad|iPhone|iPod/i.test(userAgent)) {
+  if (/iPad|iPhone|iPod/i.test(userAgent)) {
     return "iOS";
   } else if (/Android/i.test(userAgent)) {
     return "Android";
