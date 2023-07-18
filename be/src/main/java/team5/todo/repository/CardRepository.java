@@ -5,13 +5,15 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.stereotype.Repository;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import team5.todo.controller.dto.CardMoveRequest;
-import team5.todo.domain.Card;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
+
+import team5.todo.controller.dto.CardMoveRequest;
+import team5.todo.domain.Card;
+
 @Repository
 public class CardRepository {
 	private static final double GAP_VALUE = 1000D;
@@ -38,9 +40,10 @@ public class CardRepository {
 
 	public long save(Card card) {
 		String sql = "INSERT INTO card (category_id, position, title, contents) " +
-				"VALUES (:categoryId, " +
-				" IFNULL((SELECT MAX(position) FROM (SELECT * FROM card) AS sub WHERE sub.category_id = :categoryId), 0) + :gapValue, " +
-				" :title, " + " :contents)";
+			"VALUES (:categoryId, " +
+			" IFNULL((SELECT MAX(position) FROM (SELECT * FROM card) AS sub WHERE sub.category_id = :categoryId), 0) + :gapValue, "
+			+
+			" :title, " + " :contents)";
 		MapSqlParameterSource params = new MapSqlParameterSource();
 		params.addValue("categoryId", card.getCategoryId());
 		params.addValue("title", card.getTitle());
@@ -83,9 +86,9 @@ public class CardRepository {
 
 		List<Double> positions = namedParameterJdbcTemplate.queryForList(sql, params, Double.class);
 		double avgPosition = positions.stream()
-				.mapToDouble(Double::doubleValue)
-				.average()
-				.getAsDouble();
+			.mapToDouble(Double::doubleValue)
+			.average()
+			.getAsDouble();
 		sql = "UPDATE card SET position = :avgPosition, category_id = :categoryId  WHERE id = :id";
 		params.addValue("avgPosition", avgPosition);
 		params.addValue("id", cardMoveRequest.getId());
