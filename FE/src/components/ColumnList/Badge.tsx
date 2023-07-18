@@ -7,21 +7,24 @@ export function Badge({ cardsCount }: { cardsCount: number }) {
   return (
     <div
       css={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-
-        borderRadius: "8px",
-        border: `1px solid ${colors.borderDefault}`,
         ...twoDigitsOption[isTwoDigits],
+        ...badgeWrapper,
       }}>
-      <Txt typography="displayMedium12" color={`${colors.textWeak}`}>
+      <Txt typography="displayMedium12" color={colors.textWeak}>
         {cardsCount}
         {isTwoDigits === "true" && "+"}
       </Txt>
     </div>
   );
 }
+
+const badgeWrapper = {
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  borderRadius: "8px",
+  border: `1px solid ${colors.borderDefault}`,
+};
 
 const twoDigitsOption = {
   false: {

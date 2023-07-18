@@ -1,20 +1,30 @@
 import { MainPageData } from "../../pages/MainPage";
 import { ColumnWrapper } from "./ColumnWrapper";
 
-export function ColumnList({ data }: { data: MainPageData | undefined }) {
+export function ColumnList({
+  data,
+  removeColumn,
+}: {
+  data: MainPageData | undefined;
+  removeColumn(columnId: number): void;
+}) {
   return (
-    <div
-      css={{
-        display: "flex",
-        width: "1280px",
-        position: "relative",
-        top: "32px",
-        gap: "24px",
-      }}>
-      {data?.map((column) => <ColumnWrapper key={column.id} column={column} />)}
-      {/* <ColumnWrapper /> */}
-      {/* <ColumnWrapper /> */}
-      {/* <ColumnWrapper /> */}
+    <div css={columnListWrapper}>
+      {data?.map((column) => (
+        <ColumnWrapper
+          key={column.id}
+          id={column.id}
+          column={column}
+          removeColumn={removeColumn}
+        />
+      ))}
     </div>
   );
 }
+
+const columnListWrapper = {
+  display: "flex",
+  width: "1280px",
+  top: "32px",
+  gap: "24px",
+};
