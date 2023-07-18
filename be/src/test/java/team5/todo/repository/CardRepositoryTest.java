@@ -5,17 +5,16 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+
 import team5.todo.annotation.RepositoryTest;
 import team5.todo.controller.dto.CardMoveRequest;
 import team5.todo.domain.Card;
@@ -41,30 +40,30 @@ public class CardRepositoryTest {
 		//then
 		assertThat(actualCards.size()).isEqualTo(10);
 		List<Double> positions = actualCards.stream()
-				.map(Card::getPosition)
-				.collect(toList());
+			.map(Card::getPosition)
+			.collect(toList());
 
 		boolean isDecending = positions.stream()
-				.sorted((a, b) -> b.compareTo(a))
-				.collect(toList())
-				.equals(positions);
+			.sorted((a, b) -> b.compareTo(a))
+			.collect(toList())
+			.equals(positions);
 
 		assertThat(isDecending).isTrue();
 	}
 
 	@Test
 	@DisplayName("테스트 데이터가 card 테이블에 저장된다.")
-	void saveCardTest(){
+	void saveCardTest() {
 		//given
 		String testTitle = "save test1";
 		String testContents = "save test contents";
 		Card card = Card.builder()
-				.categoryId(1L)
-				.title(testTitle)
-				.contents(testContents)
-				.build();
+			.categoryId(1L)
+			.title(testTitle)
+			.contents(testContents)
+			.build();
 		String sql = "SELECT IFNULL(MAX(position), 0) FROM card WHERE category_id = 1";
-		Double maxPosition = namedParameterJdbcTemplate.queryForObject(sql,new MapSqlParameterSource(), Double.class);
+		Double maxPosition = namedParameterJdbcTemplate.queryForObject(sql, new MapSqlParameterSource(), Double.class);
 
 		//when
 		Long saveResultId = cardRepository.save(card);
@@ -72,27 +71,27 @@ public class CardRepositoryTest {
 		//then
 		Card actual = cardRepository.findById(saveResultId);
 		assertAll(
-				() -> assertEquals(1L, actual.getCategoryId()),
-				() -> assertEquals(maxPosition + CardRepository.getGapValue(), actual.getPosition()),
-				() -> assertEquals(testTitle, actual.getTitle()),
-				() -> assertEquals(testContents, actual.getContents())
+			() -> assertEquals(1L, actual.getCategoryId()),
+			() -> assertEquals(maxPosition + CardRepository.getGapValue(), actual.getPosition()),
+			() -> assertEquals(testTitle, actual.getTitle()),
+			() -> assertEquals(testContents, actual.getContents())
 		);
 	}
 
 	@Test
-	@DisplayName("카드를 저장했을 때, 저장한 카드가 삭제된다.")
+	@DisplayName("카드를 삭제했을 때, 저장한 카드가 삭제된다.")
 	void deleteCardTest() {
 		Card card = Card.builder()
-				.categoryId(1L)
-				.title("save test1")
-				.contents("save test contents")
-				.build();
+			.categoryId(1L)
+			.title("save test1")
+			.contents("save test contents")
+			.build();
 		Long saveResultId = cardRepository.save(card);
 
 		cardRepository.delete(saveResultId);
 
 		assertThatThrownBy(() -> cardRepository.findById(saveResultId))
-				.isInstanceOf(EmptyResultDataAccessException.class);
+			.isInstanceOf(EmptyResultDataAccessException.class);
 	}
 
 	@Test
@@ -100,19 +99,19 @@ public class CardRepositoryTest {
 	void updateCardTest() {
 		//given
 		Card original = Card.builder()
-				.categoryId(1L)
-				.title("original title")
-				.contents("original contents")
-				.build();
+			.categoryId(1L)
+			.title("original title")
+			.contents("original contents")
+			.build();
 		Long saveResultId = cardRepository.save(original);
 
 		String expectedTitle = "new title";
 		String expectedContents = "new contents";
 		Card updateRequest = Card.builder()
-				.id(saveResultId)
-				.title(expectedTitle)
-				.contents(expectedContents)
-				.build();
+			.id(saveResultId)
+			.title(expectedTitle)
+			.contents(expectedContents)
+			.build();
 
 		//when
 		cardRepository.modify(updateRequest);
@@ -120,8 +119,8 @@ public class CardRepositoryTest {
 		//then
 		Card actual = cardRepository.findById(saveResultId);
 		assertAll(
-				() -> assertEquals(expectedTitle, actual.getTitle()),
-				() -> assertEquals(expectedContents, actual.getContents())
+			() -> assertEquals(expectedTitle, actual.getTitle()),
+			() -> assertEquals(expectedContents, actual.getContents())
 		);
 	}
 
@@ -130,14 +129,14 @@ public class CardRepositoryTest {
 	void moveWithBothCardsTest() {
 		//given
 		CardMoveRequest cardMoveRequest = CardMoveRequest.builder()
-				.id(1L)
-				.beforeCardId(2L)
-				.afterCardId(3L)
-				.categoryId(1L)
-				.build();
+			.id(1L)
+			.beforeCardId(2L)
+			.afterCardId(3L)
+			.categoryId(1L)
+			.build();
 		Card beforeCard = cardRepository.findById(cardMoveRequest.getBeforeCardId());
 		Card afterCard = cardRepository.findById(cardMoveRequest.getAfterCardId());
-		double avgPosition = (beforeCard.getPosition() + afterCard.getPosition())/ 2;
+		double avgPosition = (beforeCard.getPosition() + afterCard.getPosition()) / 2;
 		//when
 		cardRepository.moveWithBothCards(cardMoveRequest);
 
@@ -153,11 +152,11 @@ public class CardRepositoryTest {
 	void moveWithBeforeCardTest() {
 		//given
 		CardMoveRequest cardMoveRequest = CardMoveRequest.builder()
-				.id(1L)
-				.beforeCardId(3L)
-				.afterCardId(null)
-				.categoryId(3L)
-				.build();
+			.id(1L)
+			.beforeCardId(3L)
+			.afterCardId(null)
+			.categoryId(3L)
+			.build();
 		Card beforeCard = cardRepository.findById(cardMoveRequest.getBeforeCardId());
 		double newPosition = beforeCard.getPosition() + CardRepository.getGapValue();
 		//when
@@ -175,14 +174,14 @@ public class CardRepositoryTest {
 	void moveWithAfterCardTest() {
 		//given
 		CardMoveRequest cardMoveRequest = CardMoveRequest.builder()
-				.id(1L)
-				.afterCardId(3L)
-				.beforeCardId(null)
-				.categoryId(3L)
-				.build();
+			.id(1L)
+			.afterCardId(3L)
+			.beforeCardId(null)
+			.categoryId(3L)
+			.build();
 
 		Card afterCard = cardRepository.findById(cardMoveRequest.getAfterCardId());
-		double newPosition = afterCard.getPosition()/2;
+		double newPosition = afterCard.getPosition() / 2;
 
 		//when
 		cardRepository.moveWithAfterCard(cardMoveRequest);
@@ -198,11 +197,11 @@ public class CardRepositoryTest {
 	void moveWoBothCardsTest() {
 		//given
 		CardMoveRequest cardMoveRequest = CardMoveRequest.builder()
-				.id(1L)
-				.beforeCardId(null)
-				.afterCardId(null)
-				.categoryId(2L)
-				.build();
+			.id(1L)
+			.beforeCardId(null)
+			.afterCardId(null)
+			.categoryId(2L)
+			.build();
 		double newPosition = CardRepository.getGapValue();
 
 		//when
