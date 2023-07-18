@@ -31,98 +31,43 @@ export function AddCard({
   return (
     <form
       css={{
-        display: "flex",
-        flexDirection: "column",
-        width: "268px",
-        padding: "16px",
-        gap: "16px",
-        backgroundColor: `${colors.surfaceDefault}`,
-        borderRadius: "8px",
+        backgroundColor: colors.surfaceDefault,
         boxShadow: shadow.normal,
+        ...addCardWrapper,
       }}>
-      <div
-        css={{
-          display: "flex",
-          gap: "4px",
-        }}>
-        <div
-          css={{
-            display: "flex",
-            flexDirection: "column",
-            width: "240px",
-            gap: "16px",
-          }}>
-          <div
-            css={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "8px",
-            }}>
-            <div>
-              <input
-                css={{
-                  "width": "100%",
-                  "border": "none",
-                  "fontSize": "14px",
-                  "fontWeight": 700,
-                  "color": colors.textStrong,
-                  "::placeholder": {
-                    color: colors.textStrong,
-                  },
-                  ":focus": {
-                    outline: 0,
-                  },
-                }}
-                placeholder="제목을 입력해주세요"
-                type="text"
-                value={title}
-                onChange={handleTitleChange}
-              />
-            </div>
-            <div>
-              <input
-                css={{
-                  "width": "100%",
-                  "border": "none",
-                  "fontSize": "14px",
-                  "fontWeight": 500,
-                  "color": colors.textDefault,
-                  "::placeholder": {
-                    color: colors.textDefault,
-                  },
-                  ":focus": {
-                    outline: 0,
-                  },
-                  "whiteSpace": "pre-wrap",
-                }}
-                placeholder="내용을 입력해주세요"
-                type="text"
-                value={content}
-                onChange={handleContentChange}
-              />
-            </div>
+      <div css={addCardContents}>
+        <div css={addCardInputs}>
+          <div>
+            <input
+              css={addCardInputTitle}
+              placeholder="제목을 입력해주세요"
+              type="text"
+              value={title}
+              onChange={handleTitleChange}
+            />
+          </div>
+          <div>
+            <input
+              css={addCardInputContent}
+              placeholder="내용을 입력해주세요"
+              type="text"
+              value={content}
+              onChange={handleContentChange}
+            />
           </div>
         </div>
       </div>
-      <div
-        css={{
-          display: "flex",
-          gap: "8px",
-        }}>
+      <div css={addCardButtons}>
         <Button
           text="취소"
-          width="132px"
-          height="32px"
-          color={`${colors.textDefault}`}
-          backgroundColor={`${colors.surfaceAlt}`}
+          color={colors.textDefault}
+          backgroundColor={colors.surfaceAlt}
           onClick={closeAddCard}
         />
         <Button
           text="등록"
-          width="132px"
-          height="32px"
-          color={`${colors.textWhiteDefault}`}
-          backgroundColor={`${colors.surfaceBrand}`}
+          color={colors.textWhiteDefault}
+          backgroundColor={colors.surfaceBrand}
           onClick={clickButton}
           disabled={isButtonDisabled}
         />
@@ -130,3 +75,58 @@ export function AddCard({
     </form>
   );
 }
+
+const addCardWrapper = {
+  display: "flex",
+  flexDirection: "column" as const,
+  width: "268px",
+  padding: "16px",
+  gap: "16px",
+  borderRadius: "8px",
+};
+
+const addCardContents = {
+  display: "flex",
+  gap: "4px",
+};
+
+const addCardInputs = {
+  display: "flex",
+  flexDirection: "column" as const,
+  width: "240px",
+  gap: "8px",
+};
+
+const addCardInputTitle = {
+  "width": "100%",
+  "border": "none",
+  "fontSize": "14px",
+  "fontWeight": 700,
+  "color": colors.textStrong,
+  "::placeholder": {
+    color: colors.textStrong,
+  },
+  ":focus": {
+    outline: 0,
+  },
+};
+
+const addCardInputContent = {
+  "width": "100%",
+  "border": "none",
+  "fontSize": "14px",
+  "fontWeight": 500,
+  "color": colors.textDefault,
+  "::placeholder": {
+    color: colors.textDefault,
+  },
+  ":focus": {
+    outline: 0,
+  },
+  "whiteSpace": "pre-wrap" as const,
+};
+
+const addCardButtons = {
+  display: "flex",
+  gap: "8px",
+};

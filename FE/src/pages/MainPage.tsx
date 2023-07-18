@@ -2,17 +2,39 @@ import { useContext, useEffect, useState } from "react";
 import { ColumnList } from "../components/ColumnList/ColumnList";
 import { Header } from "../components/Header/Header";
 import { colors } from "../constants/colors";
-import { Alert } from "../components/Alert/Alert";
-import { ModalContext } from "../contexts/ModalContext";
-import { Dim } from "../components/Dim/Dim";
+import { Button } from "../components/Button/Button";
+import { shadow } from "../constants/shadow";
+import { HistoryContext } from "../contexts/HistoryContext";
 
 export function MainPage() {
   const [mainPageData, setMainPageData] = useState<MainPageData>();
-  const modalContextValue = useContext(ModalContext);
-  const { isAlertOpen, setIsAlertOpen } = modalContextValue!;
+  const HistoryContextValue = useContext(HistoryContext);
+  const { setHistoryData } = HistoryContextValue!;
 
-  const handleClickAlertCancelButton = () => {
-    setIsAlertOpen(false);
+  const removeColumn = (columnId: number) => {
+    if (mainPageData) {
+      const filter = mainPageData.filter((list) => list.id !== columnId);
+      setMainPageData(filter);
+    }
+  };
+
+  const addNewColumn = () => {
+    if (mainPageData) {
+      const newColumn: Column = {
+        id: Date.now(),
+        name: "새 칼럼",
+        cards: [],
+      };
+
+      const newData = [newColumn, ...mainPageData];
+      setMainPageData(newData);
+    }
+
+    const newHistory = {
+      title: "",
+      action: "칼럼등록",
+    };
+    setHistoryData((prevHistoryData) => [newHistory, ...prevHistoryData]);
   };
 
   useEffect(() => {
@@ -29,31 +51,44 @@ export function MainPage() {
   }, []);
 
   return (
-    <div
-      css={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        // width: "100vw",
-        width: "1440px",
-        // height: "100vh",
-        height: "1024px",
-        backgroundColor: colors.surfaceAlt,
-        overflow: "hidden",
-      }}>
+    <div css={mainPageWrapper}>
       <Header />
-      <ColumnList data={mainPageData} />
-      {isAlertOpen ? <Dim /> : null}
-      {isAlertOpen ? (
-        <Alert
-          onClickLeftButton={handleClickAlertCancelButton}
-          leftButtonLabel="취소"
-          rightButtonLabel="삭제"
+      <ColumnList data={mainPageData} removeColumn={removeColumn} />
+      <div css={addColumnButton}>
+        <Button
+          icon="plus"
+          width="56px"
+          height="56px"
+          color={colors.textWhiteDefault}
+          backgroundColor={colors.surfaceBrand}
+          radius="50%"
+          boxShadow={shadow.up}
+          onClick={addNewColumn}
+          hover="65px"
         />
-      ) : null}
+      </div>
     </div>
   );
 }
+
+const mainPageWrapper = {
+  position: "relative" as const,
+  display: "flex",
+  flexDirection: "column" as const,
+  alignItems: "center",
+  // width: "100vw",
+  width: "1440px",
+  // height: "100vh",
+  height: "100vh",
+  backgroundColor: colors.surfaceAlt,
+  overflow: "hidden",
+};
+
+const addColumnButton = {
+  position: "absolute" as const,
+  right: "50px",
+  bottom: "50px",
+};
 
 export type Card = {
   id: number;
