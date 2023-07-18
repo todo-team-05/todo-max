@@ -1,17 +1,33 @@
 import { useContext, useEffect, useState } from "react";
 import { colors } from "../../constants/colors";
-import { HistoryIcon } from "../History/HistoryIcon";
 import { HistoryLayer } from "../History/HistoryLayer";
 import { Txt } from "../Txt";
 import { keyframes } from "@emotion/react";
-import { ModalContext } from "../../contexts/ModalContext";
+import { IconButton } from "../Button/IconButton";
+import { HistoryContext } from "../../contexts/HistoryContext";
+import { Alert } from "../Alert/Alert";
+import { Dim } from "../Dim/Dim";
 
 export function Header() {
   const [isHistoryLayerOpen, setIsHistoryLayerOpen] = useState(false);
-  // const [historyData, setHistoryData] = useState<HistoryItemData[]>([]);
-  const { historyData, setHistoryData } = useContext(ModalContext)!;
   const [historyAnimation, setHistoryAnimation] = useState(slideInAnimation);
   const [isHistoryAnimationEnd, setIsHistoryAnimationEnd] = useState(false);
+  const [isRemoveAll, setIsRemoveAll] = useState<boolean>(false);
+  const HistoryContextValue = useContext(HistoryContext);
+  const { historyData, setHistoryData } = HistoryContextValue!;
+
+  const showRemoveAllHistoryModal = () => {
+    setIsRemoveAll(true);
+  };
+
+  const closeRemoveAllHistoryModal = () => {
+    setIsRemoveAll(false);
+  };
+
+  const removeAllHistory = () => {
+    setHistoryData([]);
+    setIsRemoveAll(false);
+  };
 
   const handleClickHistoryIcon = () => {
     setIsHistoryLayerOpen(true);
@@ -47,29 +63,32 @@ export function Header() {
   }, [isHistoryAnimationEnd]);
 
   return (
-    <div
-      css={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        width: "1280px",
-        height: "28px",
-        padding: "0 80px",
-        margin: "18px 0",
-        overflow: "hidden",
-      }}>
+    <div css={headerWrapper}>
       <Txt typography="displayBold24" color={`${colors.textStrong}`}>
         TODO LIST
       </Txt>
-      <HistoryIcon onClick={handleClickHistoryIcon} />
+      <IconButton
+        type="history"
+        color={colors.textDefault}
+        onClick={handleClickHistoryIcon}
+      />
       {isHistoryLayerOpen ? (
         <HistoryLayer
           onAnimationEnd={handleAnimationEnd}
           animation={historyAnimation}
           onClickCloseButton={handleClickCloseButton}
           historyData={historyData}
+          showRemoveAllHistoryModal={showRemoveAllHistoryModal}
         />
       ) : null}
+      {isRemoveAll && <Dim />}
+      {isRemoveAll && (
+        <Alert
+          type="removeHistory"
+          onClickLeftButton={closeRemoveAllHistoryModal}
+          onClickRightButton={removeAllHistory}
+        />
+      )}
     </div>
   );
 }
@@ -78,9 +97,10 @@ export type HistoryItemData = {
   title: string;
   from?: string;
   to?: string;
-  at: string;
+  at?: string;
   action: string;
 };
+
 const slideIn = keyframes`
   0% {
     transform: translateX(200%);
@@ -105,4 +125,15 @@ const slideInAnimation = {
 
 const slideOutAnimation = {
   animation: `${slideOut} 0.5s ease-out forwards`,
+};
+
+const headerWrapper = {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  width: "1280px",
+  height: "28px",
+  padding: "0 80px",
+  margin: "18px 0",
+  overflow: "hidden",
 };

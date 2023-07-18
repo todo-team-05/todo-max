@@ -3,8 +3,11 @@ import { IconButton } from "../Button/IconButton";
 import { Txt } from "../Txt";
 import { getUserDevice } from "../../utils/getUserDevice";
 import { shadow } from "../../constants/shadow";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Button } from "../Button/Button";
+import { Alert } from "../Alert/Alert";
+import { Dim } from "../Dim/Dim";
+import { HistoryContext } from "../../contexts/HistoryContext";
 
 export function DefaultCard({
   id,
@@ -23,18 +26,29 @@ export function DefaultCard({
     cardId: number
   ): void;
 }) {
-  const [isEditing, setIsEditing] = useState<boolean>(false);
+  const { setHistoryData } = useContext(HistoryContext)!;
+  const [cardState, setCardState] = useState<"default" | "edit" | "delete">(
+    "default"
+  );
   const [newCardTitle, setNewCardTitle] = useState<string>(cardTitle);
   const [newCardContent, setNewCardContent] = useState<string>(cardContent);
 
-  const handleRemoveCard = () => {
+  const showDeleteCardModal = () => {
+    setCardState("delete");
+  };
+
+  const closeDeleteCardModal = () => {
+    setCardState("default");
+  };
+
+  const handleOnClickRemoveCard = () => {
     removeCard(id, cardTitle);
   };
 
   const editCard = () => {
     setNewCardTitle(cardTitle);
     setNewCardContent(cardContent);
-    setIsEditing(true);
+    setCardState("edit");
   };
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,12 +62,19 @@ export function DefaultCard({
   const cancelEditCard = () => {
     setNewCardTitle(cardTitle);
     setNewCardContent(cardContent);
-    setIsEditing(false);
+    setCardState("default");
   };
 
   const saveEditCard = () => {
+    const newHistory = {
+      title: newCardTitle,
+      at: "",
+      action: "카드변경",
+    };
+
+    setHistoryData((prevHistoryData) => [newHistory, ...prevHistoryData]);
     updateEditCard(newCardTitle, newCardContent, id);
-    setIsEditing(false);
+    setCardState("default");
   };
 
   const isButtonDisabled =
@@ -76,7 +97,7 @@ export function DefaultCard({
           display: "flex",
           gap: "4px",
         }}>
-        {!isEditing && (
+        {cardState !== "edit" && (
           <div
             css={{
               display: "flex",
@@ -108,7 +129,7 @@ export function DefaultCard({
             </div>
           </div>
         )}
-        {isEditing && (
+        {cardState === "edit" && (
           <div
             css={{
               display: "flex",
@@ -174,16 +195,12 @@ export function DefaultCard({
               }}>
               <Button
                 text="취소"
-                width="132px"
-                height="32px"
                 color={`${colors.textDefault}`}
                 backgroundColor={`${colors.surfaceAlt}`}
                 onClick={cancelEditCard}
               />
               <Button
                 text="저장"
-                width="132px"
-                height="32px"
                 color={`${colors.textWhiteDefault}`}
                 backgroundColor={`${colors.surfaceBrand}`}
                 disabled={isButtonDisabled}
@@ -192,25 +209,29 @@ export function DefaultCard({
             </div>
           </div>
         )}
-        {!isEditing && (
+        {cardState !== "edit" && (
           <div>
             <IconButton
               type="close"
-              width="24px"
-              height="24px"
               color={colors.textWeak}
-              onClick={handleRemoveCard}
+              onClick={showDeleteCardModal}
             />
             <IconButton
               type="edit"
-              width="24px"
-              height="24px"
               color={colors.textWeak}
               onClick={editCard}
             />
           </div>
         )}
       </div>
+      {cardState === "delete" && <Dim />}
+      {cardState === "delete" && (
+        <Alert
+          type="removeCard"
+          onClickLeftButton={closeDeleteCardModal}
+          onClickRightButton={handleOnClickRemoveCard}
+        />
+      )}
     </div>
   );
 }

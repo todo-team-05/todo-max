@@ -1,12 +1,12 @@
-import { ModalProvider } from "./contexts/ModalContext";
+import { HistoryProvider } from "./contexts/HistoryContext";
 import { MainPage } from "./pages/MainPage";
 
 function App() {
   return (
     <>
-      <ModalProvider>
+      <HistoryProvider>
         <MainPage />
-      </ModalProvider>
+      </HistoryProvider>
     </>
   );
 }

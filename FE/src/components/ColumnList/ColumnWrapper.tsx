@@ -3,15 +3,22 @@ import { Card, Column } from "../../pages/MainPage";
 import { DefaultCard } from "../Card/DefaultCard";
 import { ColumnTitle } from "./ColumnTitle";
 import { AddCard } from "../Card/AddCard";
-import { ModalContext } from "../../contexts/ModalContext";
+import { HistoryContext } from "../../contexts/HistoryContext";
 
-export function ColumnWrapper({ column }: { column: Column }) {
-  const { setHistoryData } = useContext(ModalContext)!;
+export function ColumnWrapper({
+  id,
+  column,
+  removeColumn,
+}: {
+  id: number;
+  column: Column;
+  removeColumn(columnId: number): void;
+}) {
+  const { setHistoryData } = useContext(HistoryContext)!;
   const [isAddCard, setIsAddCard] = useState<boolean>(false);
-  const [cardsList, setCardsList] = useState<Card[]>(column.cards); // column.cards
+  const [cardsList, setCardsList] = useState<Card[]>(column.cards);
   const columnTitle = column.name;
 
-  // const cardsCount = 10; // 두자리 수 모킹 값
   const showAddCard = () => {
     setIsAddCard(true);
   };
@@ -30,7 +37,7 @@ export function ColumnWrapper({ column }: { column: Column }) {
     const newHistory = {
       title: inputTitle,
       at: columnTitle,
-      action: "생성",
+      action: "카드등록",
     };
 
     setHistoryData((prevHistoryData) => [newHistory, ...prevHistoryData]);
@@ -43,7 +50,7 @@ export function ColumnWrapper({ column }: { column: Column }) {
     const newHistory = {
       title: cardTitle,
       at: columnTitle,
-      action: "삭제",
+      action: "카드삭제",
     };
 
     setHistoryData((prevHistoryData) => [newHistory, ...prevHistoryData]);
@@ -69,19 +76,17 @@ export function ColumnWrapper({ column }: { column: Column }) {
     });
   };
 
+  const handleRemoveColumn = () => {
+    removeColumn(id);
+  };
+
   return (
-    <div
-      css={{
-        display: "flex",
-        flexDirection: "column",
-        width: "268px",
-        gap: "8px",
-        padding: "0 16px",
-      }}>
+    <div css={columnWrapper}>
       <ColumnTitle
         columnTitle={columnTitle}
         cardsCount={cardsList.length}
         showAddCard={showAddCard}
+        handleRemoveColumn={handleRemoveColumn}
       />
       {isAddCard && (
         <AddCard closeAddCard={closeAddCard} addNewCard={addNewCard} />
@@ -99,3 +104,10 @@ export function ColumnWrapper({ column }: { column: Column }) {
     </div>
   );
 }
+
+const columnWrapper = {
+  display: "flex",
+  flexDirection: "column" as const,
+  width: "300px",
+  gap: "8px",
+};
