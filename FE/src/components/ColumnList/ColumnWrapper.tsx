@@ -1,9 +1,11 @@
-import { useContext, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { Card, Column } from "../../pages/MainPage";
 import { DefaultCard } from "../Card/DefaultCard";
 import { ColumnTitle } from "./ColumnTitle";
 import { AddCard } from "../Card/AddCard";
 import { HistoryContext } from "../../contexts/HistoryContext";
+import { CardContext } from "../../contexts/CardContext";
+import { CloneCard } from "../Card/CloneCard";
 
 export function ColumnWrapper({
   id,
@@ -19,6 +21,55 @@ export function ColumnWrapper({
   const [cardsList, setCardsList] = useState<Card[]>(column.cards);
   const columnTitle = column.name;
 
+  //ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ드래그ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+  const cardContextValue = useContext(CardContext);
+  const {
+    dragCardDataRef,
+    dragPosition,
+    currentDraggedOverCardRef,
+    isColumnDraggedOverRef,
+    setIsOverHalf,
+    isCardDraggedOverRef,
+  } = cardContextValue!;
+  const columnRef = useRef<HTMLDivElement>(null);
+
+  const columnRect = columnRef.current?.getBoundingClientRect();
+
+  const isDraggingColumn = dragCardDataRef.current.columnId === column.id;
+
+  // if (columnRect) {
+  //   sharedColumnRect.current = {
+  //     ...sharedColumnRect.current,
+  //     [column.id]: columnRect,
+  //   };
+  // }
+
+  // console.log(draggingColumnRef.current, column.id);
+  if (columnRect) {
+    const isInside =
+      dragPosition.cardMiddleX >= columnRect!.left &&
+      dragPosition.cardMiddleX <= columnRect!.right &&
+      dragPosition.cardMiddleY >= columnRect!.top &&
+      dragPosition.cardMiddleY <= columnRect!.bottom;
+
+    // if (isInside && currentDragOverColumnRef.current === column.id) {
+    //   setIsOverHalf(false);
+    //   console.log("자기 칼럼");
+    // }
+
+    if (isInside && currentDraggedOverCardRef.current.columnId !== column.id) {
+      isCardDraggedOverRef.current = false;
+      isColumnDraggedOverRef.current = true;
+
+      currentDraggedOverCardRef.current.columnId = column.id;
+      setIsOverHalf(true);
+      // console.log("칼럼", column.id, "로", "들어왓어");
+
+      // }
+    }
+  }
+
+  //ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
   const showAddCard = () => {
     setIsAddCard(true);
   };
@@ -81,7 +132,7 @@ export function ColumnWrapper({
   };
 
   return (
-    <div css={columnWrapper}>
+    <div ref={columnRef} css={{ ...columnWrapper, position: "relative" }}>
       <ColumnTitle
         columnTitle={columnTitle}
         cardsCount={cardsList.length}
@@ -93,6 +144,7 @@ export function ColumnWrapper({
       )}
       {cardsList.map((card) => (
         <DefaultCard
+          columnId={column.id}
           key={card.id}
           id={card.id}
           cardTitle={card.title}
@@ -101,6 +153,18 @@ export function ColumnWrapper({
           updateEditCard={updateEditCard}
         />
       ))}
+      {isColumnDraggedOverRef.current &&
+      currentDraggedOverCardRef.current.columnId === column.id &&
+      dragCardDataRef.current.columnId !== column.id &&
+      !isCardDraggedOverRef.current ? (
+        <CloneCard
+          cloneType="to"
+          cloneCardPosition={{ x: 0, y: 0 }}
+          newCardTitle={dragCardDataRef.current.cardTitle!}
+          newCardContent={dragCardDataRef.current.cardContent!}
+          getUserDevice={dragCardDataRef.current.userAdvice}
+        />
+      ) : null}
     </div>
   );
 }
