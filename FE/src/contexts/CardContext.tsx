@@ -9,6 +9,9 @@ type CardContextType = {
   isCardDraggedOverRef: React.MutableRefObject<boolean>;
   isColumnDraggedOverRef: React.MutableRefObject<boolean>;
   currentDraggedOverCardRef: React.MutableRefObject<CurrentDraggedOverCard>;
+  columnsRectsRef: React.MutableRefObject<Record<number, DOMRect>>;
+  droppedCardRef: React.MutableRefObject<DropCard>;
+  isDroppedRef: React.MutableRefObject<boolean>;
 };
 
 type CardProviderProps = {
@@ -25,6 +28,8 @@ export function CardProvider({ children }: CardProviderProps) {
     startY: 0,
     cloneCardX: 0,
     cloneCardY: 0,
+    absoluteX: 0,
+    absoluteY: 0,
     cardId: 0,
     columnId: 0,
     cardTitle: "",
@@ -38,14 +43,24 @@ export function CardProvider({ children }: CardProviderProps) {
     cardMiddleY: 0,
     cardTop: 0,
   });
-  const [isOverHalf, setIsOverHalf] = useState<boolean>(false);
-  const isCardDraggedOverRef = useRef<boolean>(false);
-  const isColumnDraggedOverRef = useRef<boolean>(false);
   const currentDraggedOverCardRef = useRef<CurrentDraggedOverCard>({
     cardId: 0,
     columnId: 0,
     position: "",
   });
+
+  const [isOverHalf, setIsOverHalf] = useState<boolean>(false);
+  const isCardDraggedOverRef = useRef<boolean>(false);
+  const isColumnDraggedOverRef = useRef<boolean>(false);
+  const columnsRectsRef = useRef<Record<number, DOMRect>>({});
+  const isDroppedRef = useRef<boolean>(false);
+  const droppedCardRef = useRef<DropCard>({
+    cardId: 0,
+    categoryId: 0,
+    beforeCardId: 0,
+    afterCardId: 0,
+  });
+
   const value: CardContextType = {
     dragCardDataRef,
     dragPosition,
@@ -55,6 +70,9 @@ export function CardProvider({ children }: CardProviderProps) {
     isCardDraggedOverRef,
     isColumnDraggedOverRef,
     currentDraggedOverCardRef,
+    columnsRectsRef,
+    droppedCardRef,
+    isDroppedRef,
   };
 
   return <CardContext.Provider value={value}>{children}</CardContext.Provider>;
@@ -71,6 +89,8 @@ type DragCardDataRef = {
   startY: number;
   cloneCardX: number;
   cloneCardY: number;
+  absoluteX: number;
+  absoluteY: number;
   cardId: number;
   columnId: number;
   cardTitle: string;
@@ -84,4 +104,11 @@ type DragPosition = {
   cardMiddleX: number;
   cardMiddleY: number;
   cardTop: number;
+};
+
+type DropCard = {
+  cardId: number;
+  categoryId: number;
+  beforeCardId: number;
+  afterCardId: number;
 };

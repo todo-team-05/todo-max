@@ -50,6 +50,9 @@ export function DefaultCard({
     isCardDraggedOverRef,
     isColumnDraggedOverRef,
     currentDraggedOverCardRef,
+    columnsRectsRef,
+    isDroppedRef,
+    droppedCardRef,
   } = cardContextValue!;
 
   const cardRef = useRef<HTMLDivElement>(null);
@@ -61,74 +64,95 @@ export function DefaultCard({
 
   const isDraggingCard = dragCardDataRef.current.cardId === id;
 
-  if (cardRect) {
-    const isInside =
-      dragPosition.cardMiddleX >= cardRect!.left &&
-      dragPosition.cardMiddleX <= cardRect!.right &&
-      dragPosition.cardMiddleY >= cardRect!.top &&
-      dragPosition.cardMiddleY <= cardRect!.bottom;
+  useEffect(() => {
+    if (cardRect) {
+      const isInside =
+        dragPosition.cardMiddleX >= cardRect!.left &&
+        dragPosition.cardMiddleX <= cardRect!.right &&
+        dragPosition.cardMiddleY >= cardRect!.top &&
+        dragPosition.cardMiddleY <= cardRect!.bottom;
 
-    const isAbove =
-      dragPosition.cardTop + cardRect.height / 2 <
-      cardRect.y + cardRect.height / 2;
-    const position = isAbove ? "above" : "below";
+      const isAbove =
+        dragPosition.cardTop + cardRect.height / 2 <
+        cardRect.y + cardRect.height / 2;
+      const position = isAbove ? "above" : "below";
 
-    // if (isInside && currentDragOverCardRef.current.cardId === id) {
-    //   console.log("같은카드");
-    //   setIsOverHalf(false);
-    // }
-    if (
-      isInside &&
-      !isDraggingCard &&
-      currentDraggedOverCardRef.current.position !== position
-    ) {
-      isCardDraggedOverRef.current = true;
-      isColumnDraggedOverRef.current = false;
-      currentDraggedOverCardRef.current.cardId = id;
-      currentDraggedOverCardRef.current.columnId = columnId;
-      currentDraggedOverCardRef.current.position = position;
+      // if (isInside && currentDragOverCardRef.current.cardId === id) {
+      //   console.log("같은카드");
+      //   setIsOverHalf(false);
+      // }
+      if (
+        isInside &&
+        !isDraggingCard &&
+        currentDraggedOverCardRef.current.position !== position
+      ) {
+        isCardDraggedOverRef.current = true;
+        isColumnDraggedOverRef.current = false;
 
-      setIsOverHalf(true);
+        currentDraggedOverCardRef.current = {
+          cardId: id,
+          columnId: columnId,
+          position: position,
+        };
 
-      // console.log(id, "로", position, "으로", "들어왓어");
-    } else if (
-      !isInside &&
-      !isCardDraggedOverRef.current &&
-      currentDraggedOverCardRef.current.cardId !== id
-    ) {
-      // console.log("안들어와잇음");
-    } else if (isInside && currentDraggedOverCardRef.current.cardId === id) {
-      currentDraggedOverCardRef.current.cardId = id;
-      // setIsOverHalf(false);
+        isDroppedRef.current = true;
+        setIsOverHalf(true);
+
+        console.log(id, "로", position, "으로", "들어왓어");
+      }
+      // } else if (
+      //   !isInside &&
+      //   !isCardDraggedOverRef.current &&
+      //   currentDraggedOverCardRef.current.cardId !== id
+      // ) {
+      //   // console.log("안들어와잇음");
+      if (
+        isInside &&
+        currentDraggedOverCardRef.current.cardId ===
+          dragCardDataRef.current.cardId
+      ) {
+        currentDraggedOverCardRef.current = {
+          cardId: id,
+          columnId: columnId,
+          position: position,
+        };
+        console.log("스스로");
+        isDroppedRef.current = false;
+        setIsOverHalf(false);
+      }
     }
-  }
+  }, [dragPosition]);
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
 
-    const dragCardRect = cardRef.current?.getBoundingClientRect()!;
+    const dragCardRect = cardRef.current?.getBoundingClientRect();
 
-    isDragStartRef.current = true; //ref로 바로 렌더링되지않게
+    if (dragCardRect) {
+      isDragStartRef.current = true;
 
-    dragCardDataRef.current = {
-      startX: e.clientX,
-      startY: e.clientY,
-      cloneCardX: dragCardRect.x,
-      cloneCardY: dragCardRect.y,
-      cardId: id,
-      columnId: columnId,
-      cardTitle: cardTitle,
-      cardContent: cardContent,
-      userAdvice: getUserDevice(),
-    };
+      dragCardDataRef.current = {
+        startX: e.clientX,
+        startY: e.clientY,
+        cloneCardX: dragCardRect.x,
+        cloneCardY: dragCardRect.y,
+        absoluteX: dragCardRect.x - columnsRectsRef.current[columnId].x,
+        absoluteY: dragCardRect.y - columnsRectsRef.current[columnId].y,
+        cardId: id,
+        columnId: columnId,
+        cardTitle: cardTitle,
+        cardContent: cardContent,
+        userAdvice: getUserDevice(),
+      };
+    }
   };
 
   const handleMouseMove = (e: MouseEvent) => {
     e.preventDefault();
+
     if (isDragStartRef.current) {
       const moveX = e.clientX - dragCardDataRef.current.startX;
       const moveY = e.clientY - dragCardDataRef.current.startY;
-
       const dragCardRect = cardRef.current?.getBoundingClientRect()!;
 
       setDragPosition({
@@ -142,21 +166,56 @@ export function DefaultCard({
   };
 
   const handleMouseUp = (e: MouseEvent) => {
-    // console.log("up");
     e.preventDefault();
 
-    isDragStartRef.current = false;
-    isColumnDraggedOverRef.current = false;
-    isCardDraggedOverRef.current = false;
-    currentDraggedOverCardRef.current.columnId = 0;
-    setIsOverHalf(false);
-    setDragPosition({
-      x: 0,
-      y: 0,
-      cardMiddleX: 0,
-      cardMiddleY: 0,
-      cardTop: 0,
-    });
+    if (dragCardDataRef.current.cardId === id) {
+      const isAbove = currentDraggedOverCardRef.current.position === "above";
+      const isCard = currentDraggedOverCardRef.current.cardId !== 0;
+      currentDraggedOverCardRef.current.cardId;
+      console.log(
+        dragCardDataRef.current.cardId,
+        "번 카드가",
+        isCard ? currentDraggedOverCardRef.current.cardId + "번 카드" : "칼럼",
+        "번 카드",
+        isAbove ? "위에" : "아래에",
+        "들어왓어"
+      );
+      const dragCard = dragCardDataRef.current.cardId;
+      const dragOverColumn = currentDraggedOverCardRef.current.columnId;
+      const dragOverCard = currentDraggedOverCardRef.current.cardId;
+
+      const putObj = {
+        cardId: dragCard,
+        categoryId: dragOverColumn,
+        beforeCardId: isCard ? (isAbove ? dragOverCard - 1 : dragOverCard) : 0,
+        afterCardId: isCard ? (isAbove ? dragOverCard : dragOverCard + 1) : 0,
+      };
+
+      droppedCardRef.current = {
+        ...putObj,
+      };
+      console.log(JSON.stringify(putObj));
+
+      isDragStartRef.current = false;
+      isColumnDraggedOverRef.current = false;
+      isCardDraggedOverRef.current = false;
+      dragCardDataRef.current.cardId = 0;
+
+      currentDraggedOverCardRef.current = {
+        cardId: 0,
+        columnId: 0,
+        position: "",
+      };
+
+      setIsOverHalf(false);
+      setDragPosition({
+        x: 0,
+        y: 0,
+        cardMiddleX: 0,
+        cardMiddleY: 0,
+        cardTop: 0,
+      });
+    }
   };
 
   useEffect(() => {
@@ -239,11 +298,19 @@ export function DefaultCard({
         css={{
           position: isDraggingCard
             ? isOverHalf
-              ? "relative"
+              ? "absolute"
               : "relative"
             : "relative",
-          left: isDraggingCard ? `${dragPosition.x}px` : 0,
-          top: isDraggingCard ? `${dragPosition.y}px` : 0,
+          left: isDraggingCard
+            ? isOverHalf
+              ? dragPosition.x + dragCardDataRef.current.absoluteX
+              : dragPosition.x
+            : 0,
+          top: isDraggingCard
+            ? isOverHalf
+              ? dragPosition.y + dragCardDataRef.current.absoluteY
+              : dragPosition.y
+            : 0,
           display: "flex",
           flexDirection: "column",
           width: "268px",
@@ -388,13 +455,6 @@ export function DefaultCard({
           )}
         </div>
         {cardState === "delete" && <Dim />}
-        {cardState === "delete" && (
-          <Alert
-            type="removeCard"
-            onClickLeftButton={closeDeleteCardModal}
-            onClickRightButton={handleOnClickRemoveCard}
-          />
-        )}
       </div>
       {currentDraggedOverCardRef.current.cardId === id &&
       currentDraggedOverCardRef.current.position === "below" &&
@@ -425,6 +485,13 @@ export function DefaultCard({
           />
         )
       ) : null}
+      {cardState === "delete" && (
+        <Alert
+          type="removeCard"
+          onClickLeftButton={closeDeleteCardModal}
+          onClickRightButton={handleOnClickRemoveCard}
+        />
+      )}
     </>
   );
 }

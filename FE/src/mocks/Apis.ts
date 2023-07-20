@@ -6,7 +6,7 @@ export const handlers: Array<ReturnType<(typeof rest)["get"]>> = [
   rest.get(
     "/index",
     async (
-      req: MockedRequest,
+      _: MockedRequest,
       res: ResponseComposition,
       ctx: typeof restContext
     ) => {
@@ -18,7 +18,7 @@ export const handlers: Array<ReturnType<(typeof rest)["get"]>> = [
   rest.get(
     "/history",
     async (
-      req: MockedRequest,
+      _: MockedRequest,
       res: ResponseComposition,
       ctx: typeof restContext
     ) => {
