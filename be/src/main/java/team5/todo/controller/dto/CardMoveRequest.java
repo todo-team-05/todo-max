@@ -1,8 +1,12 @@
 package team5.todo.controller.dto;
 
+import javax.validation.constraints.NotNull;
+
 public class CardMoveRequest {
 
+    @NotNull(message = "카드 id를 넣어주세요.")
     private final Long id;
+    @NotNull(message = "카테고리 id를 넣어주세요.")
     private final Long categoryId;
     private final Long beforeCardId;
     private final Long afterCardId;
