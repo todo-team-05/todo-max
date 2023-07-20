@@ -10,6 +10,7 @@ type CardContextType = {
   isColumnDraggedOverRef: React.MutableRefObject<boolean>;
   currentDraggedOverCardRef: React.MutableRefObject<CurrentDraggedOverCard>;
   columnsRectsRef: React.MutableRefObject<Record<number, DOMRect>>;
+
   droppedCardRef: React.MutableRefObject<DropCard>;
   isDroppedRef: React.MutableRefObject<boolean>;
 };
@@ -53,6 +54,7 @@ export function CardProvider({ children }: CardProviderProps) {
   const isCardDraggedOverRef = useRef<boolean>(false);
   const isColumnDraggedOverRef = useRef<boolean>(false);
   const columnsRectsRef = useRef<Record<number, DOMRect>>({});
+
   const isDroppedRef = useRef<boolean>(false);
   const droppedCardRef = useRef<DropCard>({
     cardId: 0,
@@ -71,6 +73,7 @@ export function CardProvider({ children }: CardProviderProps) {
     isColumnDraggedOverRef,
     currentDraggedOverCardRef,
     columnsRectsRef,
+
     droppedCardRef,
     isDroppedRef,
   };

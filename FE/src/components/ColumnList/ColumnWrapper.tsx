@@ -36,12 +36,34 @@ export function ColumnWrapper({
   } = cardContextValue!;
   const columnRef = useRef<HTMLDivElement>(null);
 
-  const columnRect = columnRef.current?.getBoundingClientRect();
+  const [columnRect, setColumnRect] = useState<DOMRect | undefined>();
 
-  columnsRectsRef.current = {
-    ...columnsRectsRef.current,
-    [column.id]: columnRect!,
-  };
+  // const columnRect = columnRef.current?.getBoundingClientRect();
+
+  useEffect(() => {
+    function updateRect() {
+      setColumnRect(columnRef.current?.getBoundingClientRect());
+    }
+
+    updateRect();
+
+    // Listen for resize events to recalculate the rect
+    window.addEventListener("resize", updateRect);
+
+    // Clean up event listener on unmount
+    return () => {
+      window.removeEventListener("resize", updateRect);
+    };
+  }, [columnRef]);
+
+  useEffect(() => {
+    if (columnRect) {
+      columnsRectsRef.current = {
+        ...columnsRectsRef.current,
+        [column.id]: columnRect,
+      };
+    }
+  }, [columnRect]);
 
   // const isDraggingColumn = dragCardDataRef.current.columnId === column.id;
 
@@ -241,5 +263,6 @@ const columnWrapper = {
   display: "flex",
   flexDirection: "column" as const,
   width: "300px",
+  // flexGrow: 1,
   gap: "8px",
 };

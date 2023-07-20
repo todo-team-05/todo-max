@@ -58,6 +58,20 @@ export function DefaultCard({
   const cardRef = useRef<HTMLDivElement>(null);
   const isDragStartRef = useRef<boolean>(false);
 
+  const editCardTitleRef = useRef<HTMLTextAreaElement>(null);
+  const editCardContentRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    if (cardState === "edit") {
+      // 여기에서 editCardTitleRef.current와 editCardContentRef.current는
+      // 이미 DOM에 마운트된 상태이므로 null이 아닙니다.
+      // 이제 원하는 동작을 수행할 수 있습니다.
+      console.log(editCardTitleRef.current);
+      console.log(editCardContentRef.current);
+      autoGrow(editCardTitleRef.current!);
+      autoGrow(editCardContentRef.current!);
+    }
+  }, [cardState]);
   //ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ드래그 상태ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
 
   const cardRect = cardRef.current?.getBoundingClientRect();
@@ -124,11 +138,13 @@ export function DefaultCard({
   }, [dragPosition]);
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (cardState === "edit" || cardState === "delete") return;
     e.preventDefault();
 
     const dragCardRect = cardRef.current?.getBoundingClientRect();
 
     if (dragCardRect) {
+      console.log(columnsRectsRef.current);
       isDragStartRef.current = true;
 
       dragCardDataRef.current = {
@@ -242,16 +258,24 @@ export function DefaultCard({
   };
 
   const editCard = () => {
+    console.log(editCardContentRef.current);
     setNewCardTitle(cardTitle);
     setNewCardContent(cardContent);
     setCardState("edit");
+    // autoGrow(editCardContentRef.current!);
   };
 
-  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleTitleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    autoGrow(e.target);
     setNewCardTitle(e.target.value);
   };
 
-  const handleContentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  function autoGrow(element: HTMLTextAreaElement) {
+    element.style.height = "17px";
+    element.style.height = element.scrollHeight + "px";
+  }
+  const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    autoGrow(e.target);
     setNewCardContent(e.target.value);
   };
 
@@ -313,6 +337,7 @@ export function DefaultCard({
             : 0,
           display: "flex",
           flexDirection: "column",
+          // flexGrow: 1,
           width: "268px",
           padding: "16px",
           gap: "16px",
@@ -359,14 +384,9 @@ export function DefaultCard({
               </div>
             </div>
           )}
+          {/* ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ 에딧 */}
           {cardState === "edit" && (
-            <div
-              css={{
-                display: "flex",
-                flexDirection: "column",
-                width: "240px",
-                gap: "16px",
-              }}>
+            <div>
               <div
                 css={{
                   display: "flex",
@@ -374,8 +394,12 @@ export function DefaultCard({
                   gap: "8px",
                 }}>
                 <div>
-                  <input
+                  <textarea
+                    ref={editCardTitleRef}
                     css={{
+                      "padding": "0px",
+                      "overflowY": "hidden",
+                      "whiteSpace": "pre-wrap",
                       "width": "100%",
                       "border": "none",
                       "fontSize": "14px",
@@ -387,20 +411,26 @@ export function DefaultCard({
                       ":focus": {
                         outline: 0,
                       },
+                      "resize": "none",
                     }}
                     placeholder="제목을 입력해주세요"
-                    type="text"
+                    maxLength={50}
                     value={newCardTitle}
                     onChange={handleTitleChange}
                   />
                 </div>
                 <div>
-                  <input
+                  <textarea
+                    ref={editCardContentRef}
                     css={{
+                      "padding": "0px",
+                      "overflowY": "hidden",
                       "width": "100%",
+
                       "border": "none",
                       "fontSize": "14px",
                       "fontWeight": 500,
+                      "whiteSpace": "pre-wrap",
                       "color": colors.textDefault,
                       "::placeholder": {
                         color: colors.textDefault,
@@ -408,10 +438,10 @@ export function DefaultCard({
                       ":focus": {
                         outline: 0,
                       },
-                      "whiteSpace": "pre-wrap",
+                      "resize": "none", // prevent manual resize
                     }}
                     placeholder="내용을 입력해주세요"
-                    type="text"
+                    maxLength={500} // Limit to 500 characters
                     value={newCardContent}
                     onChange={handleContentChange}
                   />
@@ -454,7 +484,6 @@ export function DefaultCard({
             </div>
           )}
         </div>
-        {cardState === "delete" && <Dim />}
       </div>
       {currentDraggedOverCardRef.current.cardId === id &&
       currentDraggedOverCardRef.current.position === "below" &&
@@ -492,6 +521,7 @@ export function DefaultCard({
           onClickRightButton={handleOnClickRemoveCard}
         />
       )}
+      {cardState === "delete" && <Dim />}
     </>
   );
 }

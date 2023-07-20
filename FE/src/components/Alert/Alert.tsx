@@ -59,7 +59,7 @@ export function Alert({
 }
 
 const alertWrapper = {
-  zIndex: 100,
+  zIndex: 9999,
   position: "fixed" as const,
   top: "50%",
   left: "50%",
