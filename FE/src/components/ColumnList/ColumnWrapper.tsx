@@ -1,9 +1,11 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Card, Column } from "../../pages/MainPage";
 import { DefaultCard } from "../Card/DefaultCard";
 import { ColumnTitle } from "./ColumnTitle";
 import { AddCard } from "../Card/AddCard";
 import { HistoryContext } from "../../contexts/HistoryContext";
+import { CardContext } from "../../contexts/CardContext";
+import { CloneCard } from "../Card/CloneCard";
 
 export function ColumnWrapper({
   id,
@@ -19,6 +21,145 @@ export function ColumnWrapper({
   const [cardsList, setCardsList] = useState<Card[]>(column.cards);
   const columnTitle = column.name;
 
+  //ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ드래그ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+  const cardContextValue = useContext(CardContext);
+  const {
+    dragCardDataRef,
+    dragPosition,
+    currentDraggedOverCardRef,
+    isColumnDraggedOverRef,
+    setIsOverHalf,
+    isCardDraggedOverRef,
+    columnsRectsRef,
+    isDroppedRef,
+    droppedCardRef,
+  } = cardContextValue!;
+  const columnRef = useRef<HTMLDivElement>(null);
+
+  const [columnRect, setColumnRect] = useState<DOMRect | undefined>();
+
+  // const columnRect = columnRef.current?.getBoundingClientRect();
+
+  useEffect(() => {
+    function updateRect() {
+      setColumnRect(columnRef.current?.getBoundingClientRect());
+    }
+
+    updateRect();
+
+    // Listen for resize events to recalculate the rect
+    window.addEventListener("resize", updateRect);
+
+    // Clean up event listener on unmount
+    return () => {
+      window.removeEventListener("resize", updateRect);
+    };
+  }, [columnRef]);
+
+  useEffect(() => {
+    if (columnRect) {
+      columnsRectsRef.current = {
+        ...columnsRectsRef.current,
+        [column.id]: columnRect,
+      };
+    }
+  }, [columnRect]);
+
+  // const isDraggingColumn = dragCardDataRef.current.columnId === column.id;
+
+  useEffect(() => {
+    console.log("droppedCardRef.current", isDroppedRef.current);
+    if (
+      droppedCardRef.current.categoryId === column.id &&
+      isDroppedRef.current
+    ) {
+      setCardsList((prevCardsList) => {
+        const afterCardId = prevCardsList.findIndex(
+          (card) => card.id === droppedCardRef.current.afterCardId
+        );
+        console.log(afterCardId);
+        const newCard = {
+          id: droppedCardRef.current.cardId,
+          title: dragCardDataRef.current.cardTitle,
+          contents: dragCardDataRef.current.cardContent,
+        };
+
+        const newCardList = [...prevCardsList];
+        newCardList.splice(afterCardId, 0, newCard);
+        console.log(newCardList);
+
+        return newCardList;
+      });
+    }
+    if (
+      dragCardDataRef.current.columnId === column.id &&
+      isDroppedRef.current
+    ) {
+      console.log("드래그한 곳이야", column.id);
+
+      setCardsList((prevCardsList) => {
+        const newCardList = prevCardsList.filter(
+          (card) => card.id !== droppedCardRef.current.cardId
+        );
+        return newCardList;
+      });
+    }
+
+    dragCardDataRef.current.cardId = 0;
+    setIsOverHalf(false);
+  }, [droppedCardRef.current]);
+
+  useEffect(() => {
+    if (columnRect) {
+      const isInside =
+        dragPosition.cardMiddleX >= columnRect!.left &&
+        dragPosition.cardMiddleX <= columnRect!.right &&
+        dragPosition.cardMiddleY >= columnRect!.top &&
+        dragPosition.cardMiddleY <= columnRect!.bottom;
+
+      if (
+        isInside &&
+        currentDraggedOverCardRef.current.columnId !== column.id
+      ) {
+        isCardDraggedOverRef.current = false;
+        isColumnDraggedOverRef.current = true;
+
+        currentDraggedOverCardRef.current = {
+          cardId: 0,
+          columnId: column.id,
+          position: "",
+        };
+        isDroppedRef.current = true;
+        setIsOverHalf(true);
+        console.log("칼럼", column.id, "로", "들어왓어");
+      }
+      if (
+        isInside &&
+        currentDraggedOverCardRef.current.columnId ===
+          dragCardDataRef.current.columnId
+      ) {
+        // isCardDraggedOverRef.current = false;
+        // isColumnDraggedOverRef.current = true;
+
+        // currentDraggedOverCardRef.current = {
+        //   cardId: 0,
+        //   columnId: column.id,
+        //   position: "",
+        // };
+
+        console.log("자기야");
+        // setIsOverHalf(false);
+        isDroppedRef.current = false;
+      }
+    }
+  }, [
+    columnRect,
+    column.id,
+    dragPosition,
+    currentDraggedOverCardRef.current.columnId,
+  ]);
+
+  //ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
   const showAddCard = () => {
     setIsAddCard(true);
   };
@@ -81,7 +222,7 @@ export function ColumnWrapper({
   };
 
   return (
-    <div css={columnWrapper}>
+    <div ref={columnRef} css={{ ...columnWrapper, position: "relative" }}>
       <ColumnTitle
         columnTitle={columnTitle}
         cardsCount={cardsList.length}
@@ -93,6 +234,7 @@ export function ColumnWrapper({
       )}
       {cardsList.map((card) => (
         <DefaultCard
+          columnId={column.id}
           key={card.id}
           id={card.id}
           cardTitle={card.title}
@@ -101,6 +243,18 @@ export function ColumnWrapper({
           updateEditCard={updateEditCard}
         />
       ))}
+      {isColumnDraggedOverRef.current &&
+      currentDraggedOverCardRef.current.columnId === column.id &&
+      dragCardDataRef.current.columnId !== column.id &&
+      !isCardDraggedOverRef.current ? (
+        <CloneCard
+          cloneType="to"
+          cloneCardPosition={{ x: 0, y: 0 }}
+          newCardTitle={dragCardDataRef.current.cardTitle!}
+          newCardContent={dragCardDataRef.current.cardContent!}
+          getUserDevice={dragCardDataRef.current.userAdvice}
+        />
+      ) : null}
     </div>
   );
 }
@@ -109,5 +263,6 @@ const columnWrapper = {
   display: "flex",
   flexDirection: "column" as const,
   width: "300px",
+  // flexGrow: 1,
   gap: "8px",
 };

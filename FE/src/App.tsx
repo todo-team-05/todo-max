@@ -1,3 +1,4 @@
+import { CardProvider } from "./contexts/CardContext";
 import { HistoryProvider } from "./contexts/HistoryContext";
 import { MainPage } from "./pages/MainPage";
 
@@ -5,7 +6,9 @@ function App() {
   return (
     <>
       <HistoryProvider>
-        <MainPage />
+        <CardProvider>
+          <MainPage />
+        </CardProvider>
       </HistoryProvider>
     </>
   );

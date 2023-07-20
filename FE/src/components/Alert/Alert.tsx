@@ -59,8 +59,8 @@ export function Alert({
 }
 
 const alertWrapper = {
-  zIndex: 100,
-  position: "absolute" as const,
+  zIndex: 9999,
+  position: "fixed" as const,
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
