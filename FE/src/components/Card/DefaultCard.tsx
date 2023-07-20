@@ -10,6 +10,7 @@ import { Dim } from "../Dim/Dim";
 import { HistoryContext } from "../../contexts/HistoryContext";
 import { CardContext } from "../../contexts/CardContext";
 import { CloneCard } from "./CloneCard";
+import { autoGrow } from "../../utils/autoGrow";
 
 export function DefaultCard({
   columnId,
@@ -68,8 +69,8 @@ export function DefaultCard({
       // 이제 원하는 동작을 수행할 수 있습니다.
       console.log(editCardTitleRef.current);
       console.log(editCardContentRef.current);
-      autoGrow(editCardTitleRef.current!);
-      autoGrow(editCardContentRef.current!);
+      autoGrow("card", editCardTitleRef.current!);
+      autoGrow("card", editCardContentRef.current!);
     }
   }, [cardState]);
   //ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ드래그 상태ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
@@ -258,24 +259,18 @@ export function DefaultCard({
   };
 
   const editCard = () => {
-    console.log(editCardContentRef.current);
     setNewCardTitle(cardTitle);
     setNewCardContent(cardContent);
     setCardState("edit");
-    // autoGrow(editCardContentRef.current!);
   };
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    autoGrow(e.target);
+    autoGrow("card", e.target);
     setNewCardTitle(e.target.value);
   };
 
-  function autoGrow(element: HTMLTextAreaElement) {
-    element.style.height = "17px";
-    element.style.height = element.scrollHeight + "px";
-  }
   const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    autoGrow(e.target);
+    autoGrow("card", e.target);
     setNewCardContent(e.target.value);
   };
 
