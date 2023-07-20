@@ -42,9 +42,9 @@ public class CategoryControllerTest {
                 .andExpect(jsonPath("$.length()").value(3))
                 .andExpect(jsonPath("$.[0].id").value(1L))
                 .andExpect(jsonPath("$.[1].name").value("2번 카테고리"))
-                .andExpect(jsonPath("$.[2].cardResponses.length()").value(4))
-                .andExpect(jsonPath("$.[2].cardResponses.[0].id").value(4L))
-                .andExpect(jsonPath("$.[2].cardResponses.[2].contents")
+                .andExpect(jsonPath("$.[2].cards.length()").value(4))
+                .andExpect(jsonPath("$.[2].cards.[0].id").value(4L))
+                .andExpect(jsonPath("$.[2].cards.[2].contents")
                         .value("이것은 6번 카드의 내용입니다."))
                 .andDo(print());
     }

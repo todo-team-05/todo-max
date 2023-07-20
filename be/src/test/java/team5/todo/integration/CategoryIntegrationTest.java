@@ -37,9 +37,9 @@ public class CategoryIntegrationTest {
                 .andExpect(jsonPath("$.length()").value(3))
                 .andExpect(jsonPath("$.[2].name").value("완료한 일"))
                 .andExpect(jsonPath("$.[1].id").value(2))
-                .andExpect(jsonPath("$.[0].cardResponses.length()").value(3))
-                .andExpect(jsonPath("$.[1].cardResponses.[1].contents").value("내용5"))
-                .andExpect(jsonPath("$.[2].cardResponses.[2].title").value("제목1"));
+                .andExpect(jsonPath("$.[0].cards.length()").value(3))
+                .andExpect(jsonPath("$.[1].cards.[1].contents").value("내용5"))
+                .andExpect(jsonPath("$.[2].cards.[2].title").value("제목1"));
 
     }
 }
