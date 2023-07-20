@@ -36,8 +36,8 @@ public class CardController {
 
 	@DeleteMapping("/{id}")
 	public void delete(@PathVariable final long id) {
-		cardService.delete(id);
 		historyService.createHistory(id);
+		cardService.delete(id);
 	}
 
 	@PutMapping("/modify")
