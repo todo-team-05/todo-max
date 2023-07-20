@@ -40,10 +40,10 @@ export function MainPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("/index");
-        // const response = await fetch(
-        //   "http://todo-max-team5-be.ap-northeast-2.elasticbeanstalk.com/index"
-        // );
+        // const response = await fetch("/index");
+        const response = await fetch(
+          "http://todo-max-team5-be.ap-northeast-2.elasticbeanstalk.com/index"
+        );
         const data = await response.json();
         setMainPageData(data);
       } catch (error) {
