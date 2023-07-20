@@ -9,5 +9,5 @@ const dimWrapper = {
   width: "100vw",
   height: "100vh",
   backgroundColor: "#14212B4D",
-  zIndex: 4,
+  zIndex: 9000,
 };

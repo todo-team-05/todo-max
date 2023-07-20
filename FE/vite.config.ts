@@ -11,4 +11,9 @@ export default defineConfig({
       },
     }),
   ],
+  server: {
+    proxy: {
+      "/api": "http://todo-max-team5-be.ap-northeast-2.elasticbeanstalk.com",
+    },
+  },
 });
