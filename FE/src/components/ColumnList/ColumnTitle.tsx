@@ -53,6 +53,7 @@ export function ColumnTitle({
   }
 
   const handleFocusOut = () => {
+    if (inputRef.current?.value === "") setNewTitle(newTitle);
     setTitleState("default");
     const newColumnTitle = inputRef.current?.value;
     const newHistory = {
