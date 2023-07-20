@@ -68,7 +68,6 @@ export function ColumnWrapper({
   // const isDraggingColumn = dragCardDataRef.current.columnId === column.id;
 
   useEffect(() => {
-    console.log("droppedCardRef.current", isDroppedRef.current);
     if (
       droppedCardRef.current.categoryId === column.id &&
       isDroppedRef.current
