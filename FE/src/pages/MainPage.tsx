@@ -45,7 +45,11 @@ export function MainPage() {
           "http://todo-max-team5-be.ap-northeast-2.elasticbeanstalk.com/index"
         );
         const data = await response.json();
-        setMainPageData(data);
+        const processedData = data === null ? [] : data;
+        processedData.forEach((column: Column) => {
+          if (column.cards === null) column.cards = [];
+        });
+        setMainPageData(processedData);
       } catch (error) {
         console.log(error);
       }

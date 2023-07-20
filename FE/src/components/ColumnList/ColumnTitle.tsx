@@ -6,6 +6,7 @@ import { Badge } from "./Badge";
 import { Dim } from "../Dim/Dim";
 import { Alert } from "../Alert/Alert";
 import { HistoryContext } from "../../contexts/HistoryContext";
+import { autoGrow } from "../../utils/autoGrow";
 
 type Props = {
   columnTitle: string;
@@ -25,7 +26,7 @@ export function ColumnTitle({
     "default"
   );
   const [newTitle, setNewTitle] = useState<string>(columnTitle);
-  const inputRef = useRef<HTMLInputElement | null>(null);
+  const inputRef = useRef<HTMLTextAreaElement | null>(null);
 
   const confirmRemoveColumn = () => {
     const newHistory = {
@@ -64,7 +65,8 @@ export function ColumnTitle({
     setHistoryData((prevHistoryData) => [newHistory, ...prevHistoryData]);
   };
 
-  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleTitleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    autoGrow("column", e.target);
     setNewTitle(e.target.value);
   };
 
@@ -78,6 +80,12 @@ export function ColumnTitle({
     };
   }, [titleState === "edit"]);
 
+  useEffect(() => {
+    if (titleState === "edit") {
+      autoGrow("column", inputRef.current!);
+    }
+  }, [titleState]);
+
   return (
     <div css={ColumnTitleContainer}>
       {titleState !== "edit" && (
@@ -90,23 +98,25 @@ export function ColumnTitle({
       )}
       {titleState === "edit" && (
         <div css={ColumnTitleTextArea}>
-          <input
+          <textarea
             ref={inputRef}
             css={inputColumnTitle}
             placeholder="제목을 입력해주세요"
-            type="text"
+            maxLength={50}
             value={newTitle}
             onChange={handleTitleChange}
             required
           />
         </div>
       )}
-      <IconButton type="plus" color={colors.textWeak} onClick={showAddCard} />
-      <IconButton
-        type="close"
-        color={colors.textWeak}
-        onClick={showDeleteColumnModal}
-      />
+      <div css={{ display: "flex", gap: "8px" }}>
+        <IconButton type="plus" color={colors.textWeak} onClick={showAddCard} />
+        <IconButton
+          type="close"
+          color={colors.textWeak}
+          onClick={showDeleteColumnModal}
+        />
+      </div>
       {titleState === "delete" && <Dim />}
       {titleState === "delete" && (
         <Alert
@@ -122,16 +132,16 @@ export function ColumnTitle({
 const ColumnTitleContainer = {
   padding: "0px 16px",
   display: "flex",
-  width: "100%",
-  height: "24px",
-  gap: "8px",
+  width: "300px",
+  justifyContent: "space-between",
+  gap: "8px" as const,
   alignContent: "center",
   boxSizing: "border-box" as const,
 };
 
 const ColumnTitleTextArea = {
   display: "flex",
-  width: "204px",
+  maxWidth: "204px",
   justifyContent: "start",
   alignContent: "center",
   gap: "8px",
@@ -153,4 +163,9 @@ const inputColumnTitle = {
   ":focus": {
     outline: 0,
   },
+  "resize": "none" as const,
+  "overflowY": "hidden" as const,
+  "whiteSpace": "pre-wrap" as const,
+  "fontFamily":
+    "-apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Pretendard Variable', Pretendard, Roboto, 'Noto Sans KR', 'Segoe UI', 'Malgun Gothic', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif",
 };
