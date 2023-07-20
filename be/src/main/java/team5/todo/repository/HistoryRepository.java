@@ -38,7 +38,8 @@ public class HistoryRepository {
 	}
 
 	public List<History> findAll() {
-		String sql = "SELECT title, action, origin, destination, at, created_at FROM history LIMIT 20";
+		String sql = "SELECT title, action, origin, destination, at, created_at FROM history " +
+				"ORDER BY created_at DESC LIMIT 20";
 		return namedParameterJdbcTemplate.query(sql, historyRowMapper());
 	}
 
