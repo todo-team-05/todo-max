@@ -36,6 +36,7 @@ public class HistoryIntegrationTest extends Integration {
 	@Test
 	void historyAfterSaveTest() throws Exception {
 		// given
+		Thread.sleep(1000L);
 		카드를_저장한다();
 
 		// when
@@ -47,6 +48,7 @@ public class HistoryIntegrationTest extends Integration {
 	@Test
 	void historyAfterDeleteTest() throws Exception {
 		// given
+		Thread.sleep(1000L);
 		카드를_삭제한다();
 
 		// when
@@ -58,6 +60,7 @@ public class HistoryIntegrationTest extends Integration {
 	@Test
 	void historyAfterModifyTest() throws Exception {
 		// given
+		Thread.sleep(1000L);
 		카드를_수정한다();
 
 		// when
@@ -69,6 +72,7 @@ public class HistoryIntegrationTest extends Integration {
 	@Test
 	void historyAfterMoveTest() throws Exception {
 		// given
+		Thread.sleep(1000L);
 		카드를_이동한다();
 
 		// when

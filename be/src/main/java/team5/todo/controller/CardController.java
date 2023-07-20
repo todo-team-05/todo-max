@@ -15,6 +15,8 @@ import team5.todo.controller.dto.CardSaveRequest;
 import team5.todo.service.CardService;
 import team5.todo.service.HistoryService;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/card")
 public class CardController {
@@ -29,7 +31,7 @@ public class CardController {
 	}
 
 	@PostMapping
-	public void save(@RequestBody final CardSaveRequest cardSaveRequest) {
+	public void save(@Valid @RequestBody final CardSaveRequest cardSaveRequest) {
 		cardService.save(cardSaveRequest);
 		historyService.createHistory(cardSaveRequest);
 	}
@@ -41,14 +43,14 @@ public class CardController {
 	}
 
 	@PutMapping("/modify")
-	public void modify(@RequestBody final CardModifyRequest cardModifyRequest) {
+	public void modify(@Valid @RequestBody final CardModifyRequest cardModifyRequest) {
 		cardService.modify(cardModifyRequest);
 		historyService.createHistory(cardModifyRequest);
 
 	}
 
 	@PutMapping("/move")
-	public void move(@RequestBody final CardMoveRequest cardMoveRequest) {
+	public void move(@Valid @RequestBody final CardMoveRequest cardMoveRequest) {
 		historyService.createHistory(cardMoveRequest);
 		cardService.move(cardMoveRequest);
 	}
