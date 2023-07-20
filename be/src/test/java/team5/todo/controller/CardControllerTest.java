@@ -105,4 +105,56 @@ public class CardControllerTest {
 			.andExpect(status().isOk())
 			.andDo(print());
 	}
+
+	@Test
+	@DisplayName("제목이 64자 이상일 시 BAD REQUEST를 반환한다")
+	void throwBadRequestWhenTitleOverlength() throws Exception{
+		CardSaveRequest cardSaveRequest = CardSaveRequest.builder()
+				.categoryId(1L)
+				.title("1234567890123456789012345678901234567890123456789012345678901234567890")
+				.contents("contents")
+				.build();
+		ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders
+				.post("/card")
+				.content(objectMapper.writeValueAsString(cardSaveRequest))
+				.contentType(MediaType.APPLICATION_JSON));
+		resultActions
+				.andExpect(status().isBadRequest())
+				.andDo(print());
+	}
+
+	@Test
+	@DisplayName("내용이 1자 이하일 시 BAD REQUEST를 반환한다")
+	void throwBadRequestWhenContentsUnderlength() throws Exception{
+		CardModifyRequest cardModifyRequest = CardModifyRequest.builder()
+				.id(1L)
+				.title("title")
+				.contents("")
+				.build();
+		ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders
+				.put("/card/modify")
+				.content(objectMapper.writeValueAsString(cardModifyRequest))
+				.contentType(MediaType.APPLICATION_JSON));
+		resultActions
+				.andExpect(status().isBadRequest())
+				.andDo(print());
+	}
+
+	@Test
+	@DisplayName("id값이 null일 시 BAD REQUEST를 반환한다")
+	void throwBadRequestNoId() throws Exception{
+		CardMoveRequest cardMoveRequest = CardMoveRequest.builder()
+				.id(1L)
+				.afterCardId(null)
+				.beforeCardId(null)
+				.categoryId(null)
+				.build();
+		ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders
+				.put("/card/move")
+				.content(objectMapper.writeValueAsString(cardMoveRequest))
+				.contentType(MediaType.APPLICATION_JSON));
+		resultActions
+				.andExpect(status().isBadRequest())
+				.andDo(print());
+	}
 }
