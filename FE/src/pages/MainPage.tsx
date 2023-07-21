@@ -7,9 +7,15 @@ import { shadow } from "../constants/shadow";
 import { HistoryContext } from "../contexts/HistoryContext";
 
 export function MainPage() {
+  const [refresh, setRefresh] = useState<number>(0);
   const [mainPageData, setMainPageData] = useState<MainPageData>();
   const HistoryContextValue = useContext(HistoryContext);
   const { setHistoryData } = HistoryContextValue!;
+
+  const refreshMainData = () => {
+    setRefresh(refresh + 1);
+    console.log(refresh);
+  };
 
   const removeColumn = (columnId: number) => {
     if (mainPageData) {
@@ -42,7 +48,7 @@ export function MainPage() {
       try {
         // const response = await fetch("/index");
         const response = await fetch(
-          "http://todo-max-team5-be.ap-northeast-2.elasticbeanstalk.com/index"
+          "http://dev-todo-max-team5-be.ap-northeast-2.elasticbeanstalk.com/index"
         );
         const data = await response.json();
         const processedData = data === null ? [] : data;
@@ -50,17 +56,22 @@ export function MainPage() {
           if (column.cards === null) column.cards = [];
         });
         setMainPageData(processedData);
+        console.log("메인 업데이트!!");
       } catch (error) {
         console.log(error);
       }
     };
     fetchData();
-  }, []);
+  }, [refresh]);
 
   return (
     <div css={mainPageWrapper}>
       <Header />
-      <ColumnList data={mainPageData} removeColumn={removeColumn} />
+      <ColumnList
+        data={mainPageData}
+        removeColumn={removeColumn}
+        refreshMainData={refreshMainData}
+      />
       <div css={addColumnButton}>
         <Button
           icon="plus"
@@ -83,9 +94,7 @@ const mainPageWrapper = {
   display: "flex",
   flexDirection: "column" as const,
   alignItems: "center",
-  // width: "100vw",
   width: "1440px",
-  // height: "100vh",
   height: "100vh",
   backgroundColor: colors.surfaceAlt,
   overflow: "hidden",

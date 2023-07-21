@@ -1,6 +1,7 @@
 import { colors } from "../../constants/colors";
 import { Txt } from "../Txt";
 import { HistoryItemData } from "../Header/Header";
+import { calculateTime } from "../../utils/calculateTime";
 
 export function HistoryItem({ history }: { history: HistoryItemData }) {
   return (
@@ -19,7 +20,7 @@ export function HistoryItem({ history }: { history: HistoryItemData }) {
         </div>
         <div className="historyBodyTime" css={historyTime}>
           <Txt typography="displayMedium12" color={colors.textWeak}>
-            3분전
+            {history.createdAt && calculateTime(history.createdAt)}
           </Txt>
         </div>
       </div>
@@ -35,7 +36,7 @@ const generateHistoryText = (history: HistoryItemData) => {
     color: "#4E4B66",
   };
   switch (history.action) {
-    case "카드등록":
+    case "생성":
       return (
         <>
           <span style={boldStyle}>{history.title}</span>을(를){" "}
@@ -43,7 +44,7 @@ const generateHistoryText = (history: HistoryItemData) => {
           <span style={boldStyle}>등록</span>하였습니다.
         </>
       );
-    case "카드삭제":
+    case "삭제":
       return (
         <>
           <span style={boldStyle}>{history.title}</span>을(를){" "}
@@ -51,11 +52,11 @@ const generateHistoryText = (history: HistoryItemData) => {
           <span style={boldStyle}>삭제</span>하였습니다.
         </>
       );
-    case "카드변경":
+    case "수정":
       return (
         <>
           <span style={boldStyle}>{history.title}</span>을(를){" "}
-          <span style={boldStyle}>변경</span>하였습니다.
+          <span style={boldStyle}>수정</span>하였습니다.
         </>
       );
     case "카드이동":

@@ -82,7 +82,7 @@ export function CardProvider({ children }: CardProviderProps) {
 }
 
 type CurrentDraggedOverCard = {
-  cardId: number;
+  cardId: number | null;
   columnId: number;
   position: string;
 };
