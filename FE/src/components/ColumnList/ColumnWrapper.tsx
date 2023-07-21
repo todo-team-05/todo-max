@@ -68,7 +68,7 @@ export function ColumnWrapper({
     }
   }, [columnRect]);
 
-  const isDraggingColumn = dragCardDataRef.current.columnId === column.id;
+  // const isDraggingColumn = dragCardDataRef.current.columnId === column.id;
 
   useEffect(() => {
     if (
@@ -127,7 +127,7 @@ export function ColumnWrapper({
         isColumnDraggedOverRef.current = true;
 
         currentDraggedOverCardRef.current = {
-          cardId: null,
+          cardId: 0,
           columnId: column.id,
           position: "",
         };
@@ -260,54 +260,45 @@ export function ColumnWrapper({
 
   return (
     <div ref={columnRef} css={{ ...columnWrapper, position: "relative" }}>
-      <div css={{ position: "fixed" }}>
-        <ColumnTitle
-          columnTitle={columnTitle}
-          cardsCount={cardsList.length}
-          showAddCard={showAddCard}
-          handleRemoveColumn={handleRemoveColumn}
+      <ColumnTitle
+        columnTitle={columnTitle}
+        cardsCount={cardsList.length}
+        showAddCard={showAddCard}
+        handleRemoveColumn={handleRemoveColumn}
+      />
+
+      {isAddCard && (
+        <AddCard
+          id={id}
+          columnId={column.id}
+          closeAddCard={closeAddCard}
+          addNewCard={addNewCard}
+          refreshMainData={refreshMainData}
         />
-      </div>
-      <div
-        css={{
-          marginTop: "30px",
-          display: "flex",
-          flexDirection: "column",
-          gap: "8px",
-        }}>
-        {isAddCard && (
-          <AddCard
-            id={id}
-            columnId={column.id}
-            closeAddCard={closeAddCard}
-            addNewCard={addNewCard}
-            refreshMainData={refreshMainData}
-          />
-        )}
-        {cardsList.map((card) => (
-          <DefaultCard
-            columnId={column.id}
-            key={card.id}
-            id={card.id}
-            cardTitle={card.title}
-            cardContent={card.contents}
-            removeCard={removeCard}
-            updateEditCard={updateEditCard}
-          />
-        ))}
-        {isColumnDraggedOverRef.current &&
-        currentDraggedOverCardRef.current.columnId === column.id &&
-        dragCardDataRef.current.columnId !== column.id &&
-        !isCardDraggedOverRef.current ? (
-          <CloneCard
-            cloneType="to"
-            cloneCardPosition={{ x: 0, y: 0 }}
-            newCardTitle={dragCardDataRef.current.cardTitle!}
-            newCardContent={dragCardDataRef.current.cardContent!}
-            getUserDevice={dragCardDataRef.current.userAdvice}
-          />
-        ) : null}
-      </div>
+      )}
+      {cardsList.map((card) => (
+        <DefaultCard
+          columnId={column.id}
+          key={card.id}
+          id={card.id}
+          cardTitle={card.title}
+          cardContent={card.contents}
+          removeCard={removeCard}
+          updateEditCard={updateEditCard}
+        />
+      ))}
+      {isColumnDraggedOverRef.current &&
+      currentDraggedOverCardRef.current.columnId === column.id &&
+      dragCardDataRef.current.columnId !== column.id &&
+      !isCardDraggedOverRef.current ? (
+        <CloneCard
+          cloneType="to"
+          cloneCardPosition={{ x: 0, y: 0 }}
+          newCardTitle={dragCardDataRef.current.cardTitle!}
+          newCardContent={dragCardDataRef.current.cardContent!}
+          getUserDevice={dragCardDataRef.current.userAdvice}
+        />
+      ) : null}
     </div>
   );
 }
@@ -317,8 +308,8 @@ const columnWrapper = {
   "flexDirection": "column" as const,
   "width": "310px",
   "height": "700px",
-  "overflow": "scroll",
-  "overflowX": "hidden" as const,
+  // "overflow": "scroll",
+  // "overflowX": "hidden" as const,
   "gap": "8px",
   "&::-webkit-scrollbar": {
     width: "6px",
