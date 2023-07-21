@@ -3,6 +3,7 @@ package team5.todo.repository;
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.List;
 import static org.assertj.core.api.Assertions.*;
+
 import javax.sql.DataSource;
 
 import org.junit.jupiter.api.DisplayName;
@@ -36,5 +37,4 @@ public class CategoryRepositoryTest {
 		assertThat(actual.get(1).getId()).isEqualTo(2L);
 		assertThat(actual.get(2).getId()).isEqualTo(3L);
 	}
-
 }

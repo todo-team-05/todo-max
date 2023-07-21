@@ -1,12 +1,15 @@
 package team5.todo.repository;
 
+
 import static java.util.stream.Collectors.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+
 import java.util.List;
 
 import javax.sql.DataSource;
+
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,6 +41,7 @@ public class CardRepositoryTest {
 		//when
 		List<Card> actualCards = cardRepository.findAll();
 		//then
+
 		assertThat(actualCards.size()).isEqualTo(10);
 		List<Double> positions = actualCards.stream()
 			.map(Card::getPosition)
@@ -53,6 +57,7 @@ public class CardRepositoryTest {
 
 	@Test
 	@DisplayName("테스트 데이터가 card 테이블에 저장된다.")
+
 	void saveCardTest() {
 		//given
 		String testTitle = "save test1";
@@ -70,6 +75,7 @@ public class CardRepositoryTest {
 
 		//then
 		Card actual = cardRepository.findById(saveResultId);
+
 		assertAll(
 			() -> assertEquals(1L, actual.getCategoryId()),
 			() -> assertEquals(maxPosition + CardRepository.getGapValue(), actual.getPosition()),
@@ -103,6 +109,7 @@ public class CardRepositoryTest {
 			.title("original title")
 			.contents("original contents")
 			.build();
+
 		Long saveResultId = cardRepository.save(original);
 
 		String expectedTitle = "new title";

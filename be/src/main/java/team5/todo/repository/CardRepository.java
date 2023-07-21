@@ -1,10 +1,14 @@
 package team5.todo.repository;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 
 import javax.sql.DataSource;
 
 import org.springframework.jdbc.core.RowMapper;
+
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -17,6 +21,7 @@ import team5.todo.domain.Card;
 @Repository
 public class CardRepository {
 	private static final double GAP_VALUE = 1000D;
+  
 	private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
 	public CardRepository(DataSource dataSource) {
@@ -41,13 +46,14 @@ public class CardRepository {
 	public long save(Card card) {
 		String sql = "INSERT INTO card (category_id, position, title, contents) " +
 			"VALUES (:categoryId, " +
-			" IFNULL((SELECT MAX(position) FROM (SELECT * FROM card) AS sub WHERE sub.category_id = :categoryId), 0) + :gapValue, "
-			+
+			" IFNULL((SELECT MAX(position) FROM (SELECT * FROM card) AS sub WHERE sub.category_id = :categoryId), 0) + :gapValue, "	+
 			" :title, " + " :contents)";
+
 		MapSqlParameterSource params = new MapSqlParameterSource();
 		params.addValue("categoryId", card.getCategoryId());
 		params.addValue("title", card.getTitle());
 		params.addValue("contents", card.getContents());
+
 		params.addValue("gapValue", GAP_VALUE);
 
 		KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -62,6 +68,7 @@ public class CardRepository {
 		return namedParameterJdbcTemplate.queryForObject(sql, params, cardRowMapper());
 	}
 
+
 	public void delete(final long id) {
 		String sql = "DELETE FROM card WHERE id = :id";
 		MapSqlParameterSource params = new MapSqlParameterSource("id", id);
@@ -69,6 +76,7 @@ public class CardRepository {
 	}
 
 	public void modify(Card card) {
+
 		String sql = "UPDATE card SET title = :title , contents = :contents WHERE id = :id";
 		MapSqlParameterSource params = new MapSqlParameterSource();
 		params.addValue("title", card.getTitle());
@@ -138,31 +146,4 @@ public class CardRepository {
 	public static double getGapValue() {
 		return GAP_VALUE;
 	}
-
-	/*
-	## 앞과 뒤 카드 아이디 없으면 어떻게 position 넣을 것인지? 어디에서 처리할 것인지
-	위 (앞): 최신
-	카드
-	아래 (뒤): 과거
-
-	앞 X 뒤 X: 레포지토리에서 갭 넣음
-	앞 O 뒤 X: 앞 카드의 포지션을 가지고 와서 그 값의 절반을 넣습니다.
-	앞 X 뒤 O: 뒤 카드의 포지션을 가지고 와서 그 값에 갭밸류를 더해서 넣습니다.
-	앞 O 뒤 O: 앞, 뒤 포지션/2해서 넣어줍니다.
-
-	// 변경사항
-	앞 O 뒤 X: 카드 테이블에서 동일한 카테고리의 포지션 값들중 최솟값을 가지고 와서 그 값의 절반을 넣습니다.
-	앞 X 뒤 O: 카드 테이블에서 동일한 카테고리의 포지션 값들중 최댓값을 가지고 와서 그 값에 갭밸류를 더해 넣습니다.
-	->
-	앞 O 뒤 X: 앞 카드의 포지션을 가지고 와서 그 값의 절반을 넣습니다.
-	앞 X 뒤 O: 뒤 카드의 포지션을 가지고 와서 그 값에 갭밸류를 더해서 넣습니다.
-	변경 사유:
-	이전 방법에서는 DB에서 값을 다 탐색하고 최댓값, 최솟값을 가져와야 하는데 그것보다 아이디로 탐색하는게 시간이 적게 걸릴 것 같습니다.
-	또한 이전 방법에서는 아이디가 필요 없는데 바꾼 방법에서는 아이디를 사용합니다.
-
-	X
-	카드
-	최신
-	 */
-
 }

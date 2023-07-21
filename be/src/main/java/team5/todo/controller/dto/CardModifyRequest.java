@@ -2,6 +2,7 @@ package team5.todo.controller.dto;
 
 import team5.todo.domain.Card;
 
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -12,6 +13,7 @@ public class CardModifyRequest {
     @Size(min = 1, max = 64, message = "제목은 1~64자 이하여야 합니다.")
     private final String title;
     @Size(min = 1, max = 500, message = "내용은 1~500자 이하여야 합니다.")
+
     private final String contents;
 
     public static class Builder {

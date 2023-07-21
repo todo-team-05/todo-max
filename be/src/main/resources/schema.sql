@@ -20,6 +20,7 @@ CREATE TABLE card
     PRIMARY KEY (id)
 );
 
+
 CREATE TABLE history
 (
     id          bigint AUTO_INCREMENT,
@@ -29,5 +30,6 @@ CREATE TABLE history
     destination varchar(64),
     at          varchar(64),
     created_at  timestamp default current_timestamp,
+
     PRIMARY KEY (id)
 );

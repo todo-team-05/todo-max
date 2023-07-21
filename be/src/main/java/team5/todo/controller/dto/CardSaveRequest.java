@@ -2,6 +2,7 @@ package team5.todo.controller.dto;
 
 import team5.todo.domain.Card;
 
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
