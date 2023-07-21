@@ -4,9 +4,11 @@ import { ColumnWrapper } from "./ColumnWrapper";
 export function ColumnList({
   data,
   removeColumn,
+  refreshMainData,
 }: {
   data: MainPageData | undefined;
   removeColumn(columnId: number): void;
+  refreshMainData(): void;
 }) {
   return (
     <div css={columnListWrapper}>
@@ -16,6 +18,7 @@ export function ColumnList({
           id={column.id}
           column={column}
           removeColumn={removeColumn}
+          refreshMainData={refreshMainData}
         />
       ))}
     </div>

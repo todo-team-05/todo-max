@@ -4,11 +4,17 @@ import { Button } from "../Button/Button";
 import { shadow } from "../../constants/shadow";
 
 export function AddCard({
+  id,
+  columnId,
   closeAddCard,
   addNewCard,
+  refreshMainData,
 }: {
+  id: number;
+  columnId: number;
   closeAddCard(): void;
   addNewCard(inputTitle: string, inputContent: string): void;
+  refreshMainData(): void;
 }) {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -24,6 +30,37 @@ export function AddCard({
   const clickButton = () => {
     addNewCard(title, content);
     closeAddCard();
+    postNewCard();
+  };
+
+  const postNewCard = () => {
+    const url =
+      "http://dev-todo-max-team5-be.ap-northeast-2.elasticbeanstalk.com/card";
+
+    const data = {
+      categoryId: columnId,
+      title: title,
+      contents: content,
+    };
+
+    fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => {
+        if (response.ok) {
+          refreshMainData();
+          console.log("POST 요청이 성공했습니다.");
+        } else {
+          console.log("POST 요청이 실패했습니다.");
+        }
+      })
+      .catch((error) => {
+        console.error("POST 요청 중 에러가 발생했습니다:", error);
+      });
   };
 
   const isButtonDisabled = title.trim() === "" || content.trim() === "";

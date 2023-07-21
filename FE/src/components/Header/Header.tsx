@@ -27,7 +27,36 @@ export function Header() {
   const removeAllHistory = () => {
     setHistoryData([]);
     setIsRemoveAll(false);
+    handleDeleteAllHistory();
   };
+
+  const handleDeleteAllHistory = () => {
+    const url =
+      "http://dev-todo-max-team5-be.ap-northeast-2.elasticbeanstalk.com/history"; // 카드를 삭제할 엔드포인트
+
+    fetch(url, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (response.status === 200) {
+          console.log("히스토리가 성공적으로 삭제되었습니다.");
+        } else if (response.status === 400) {
+          console.log("히스토리를 찾을 수 없습니다.");
+        } else {
+          console.log("히스토리 삭제에 실패했습니다.");
+        }
+      })
+      .catch((error) => {
+        console.error("DELETE 요청 중 에러가 발생했습니다:", error);
+      });
+  };
+
+  useEffect(() => {
+    fetchHistoryData;
+  }, [historyData]);
 
   const handleClickHistoryIcon = () => {
     setIsHistoryLayerOpen(true);
@@ -46,7 +75,9 @@ export function Header() {
 
   const fetchHistoryData = async () => {
     try {
-      const response = await fetch("/history");
+      const response = await fetch(
+        "http://dev-todo-max-team5-be.ap-northeast-2.elasticbeanstalk.com/history"
+      );
       const data = await response.json();
       setHistoryData(data);
     } catch (error) {
@@ -99,6 +130,7 @@ export type HistoryItemData = {
   to?: string;
   at?: string;
   action: string;
+  createdAt?: string;
 };
 
 const slideIn = keyframes`

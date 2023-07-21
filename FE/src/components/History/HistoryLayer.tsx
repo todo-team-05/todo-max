@@ -21,7 +21,7 @@ export function HistoryLayer({
   showRemoveAllHistoryModal(): void;
 }) {
   const hasHistory = historyData && historyData.length > 0;
-
+  console.log(historyData);
   return (
     <div
       onAnimationEnd={onAnimationEnd}

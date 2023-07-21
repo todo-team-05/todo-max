@@ -131,7 +131,7 @@ export function DefaultCard({
           columnId: columnId,
           position: position,
         };
-        console.log("스스로");
+        // console.log("스스로");
         isDroppedRef.current = false;
         setIsOverHalf(false);
       }
@@ -145,7 +145,7 @@ export function DefaultCard({
     const dragCardRect = cardRef.current?.getBoundingClientRect();
 
     if (dragCardRect) {
-      console.log(columnsRectsRef.current);
+      // console.log(columnsRectsRef.current);
       isDragStartRef.current = true;
 
       dragCardDataRef.current = {
@@ -185,7 +185,7 @@ export function DefaultCard({
   const handleMouseUp = (e: MouseEvent) => {
     e.preventDefault();
 
-    if (dragCardDataRef.current.cardId === id) {
+    if (isDragStartRef.current && dragCardDataRef.current.cardId === id) {
       const isAbove = currentDraggedOverCardRef.current.position === "above";
       const isCard = currentDraggedOverCardRef.current.cardId !== 0;
       currentDraggedOverCardRef.current.cardId;
@@ -199,21 +199,50 @@ export function DefaultCard({
       );
       const dragCard = dragCardDataRef.current.cardId;
       const dragOverColumn = currentDraggedOverCardRef.current.columnId;
-      const dragOverCard = currentDraggedOverCardRef.current.cardId;
 
-      const putObj = {
-        cardId: dragCard,
-        categoryId: dragOverColumn,
-        beforeCardId: isCard ? (isAbove ? dragOverCard - 1 : dragOverCard) : 0,
-        afterCardId: isCard ? (isAbove ? dragOverCard : dragOverCard + 1) : 0,
-      };
+      if (currentDraggedOverCardRef.current.cardId) {
+        const dragOverCard = currentDraggedOverCardRef.current.cardId;
 
-      droppedCardRef.current = {
-        ...putObj,
-      };
-      console.log(JSON.stringify(putObj));
+        const putObj = {
+          cardId: dragCard,
+          categoryId: dragOverColumn,
+          beforeCardId: isCard
+            ? isAbove
+              ? dragOverCard - 1
+              : dragOverCard
+            : 0,
+          afterCardId: isCard ? (isAbove ? dragOverCard : dragOverCard + 1) : 0,
+        };
 
-      isDragStartRef.current = false;
+        droppedCardRef.current = {
+          ...putObj,
+        };
+        //ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+        // console.log(JSON.stringify(putObj));
+
+        const url = `http://dev-todo-max-team5-be.ap-northeast-2.elasticbeanstalk.com/card/move`; // 카드를 수정할 엔드포인트
+
+        fetch(url, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(putObj),
+        })
+          .then((response) => {
+            if (response.status === 200) {
+              console.log("카드가 성공적으로 수정되었습니다.");
+            } else if (response.status === 400) {
+              console.log("카드를 찾을 수 없습니다.");
+            } else {
+              console.log("카드 수정에 실패했습니다.");
+            }
+          })
+          .catch((error) => {
+            console.error("PUT 요청 중 에러가 발생했습니다:", error);
+          });
+      }
+      //ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
       isColumnDraggedOverRef.current = false;
       isCardDraggedOverRef.current = false;
       dragCardDataRef.current.cardId = 0;
@@ -233,6 +262,7 @@ export function DefaultCard({
         cardTop: 0,
       });
     }
+    isDragStartRef.current = false;
   };
 
   useEffect(() => {
@@ -256,6 +286,60 @@ export function DefaultCard({
 
   const handleOnClickRemoveCard = () => {
     removeCard(id, cardTitle);
+    handleDeleteCard();
+  };
+
+  const handleDeleteCard = () => {
+    const url = `http://dev-todo-max-team5-be.ap-northeast-2.elasticbeanstalk.com/card/${id}`; // 카드를 삭제할 엔드포인트
+
+    fetch(url, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (response.status === 200) {
+          console.log("카드가 성공적으로 삭제되었습니다.");
+        } else if (response.status === 404) {
+          console.log("카드를 찾을 수 없습니다.");
+        } else {
+          console.log("카드 삭제에 실패했습니다.");
+        }
+      })
+      .catch((error) => {
+        console.error("DELETE 요청 중 에러가 발생했습니다:", error);
+      });
+  };
+
+  const handleModifyCard = () => {
+    const url = `http://dev-todo-max-team5-be.ap-northeast-2.elasticbeanstalk.com/card/modify`; // 카드를 수정할 엔드포인트
+
+    const data = {
+      id: id,
+      title: newCardTitle,
+      contents: newCardContent,
+    };
+    console.log(data);
+    fetch(url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => {
+        if (response.status === 200) {
+          console.log("카드가 성공적으로 수정되었습니다.");
+        } else if (response.status === 400) {
+          console.log("카드를 찾을 수 없습니다.");
+        } else {
+          console.log("카드 수정에 실패했습니다.");
+        }
+      })
+      .catch((error) => {
+        console.error("PUT 요청 중 에러가 발생했습니다:", error);
+      });
   };
 
   const editCard = () => {
@@ -284,12 +368,14 @@ export function DefaultCard({
     const newHistory = {
       title: newCardTitle,
       at: "",
-      action: "카드변경",
+      action: "수정",
+      createdAt: new Date().toString(),
     };
 
     setHistoryData((prevHistoryData) => [newHistory, ...prevHistoryData]);
     updateEditCard(newCardTitle, newCardContent, id);
     setCardState("default");
+    handleModifyCard();
   };
 
   const isButtonDisabled =

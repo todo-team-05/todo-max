@@ -6,15 +6,18 @@ import { AddCard } from "../Card/AddCard";
 import { HistoryContext } from "../../contexts/HistoryContext";
 import { CardContext } from "../../contexts/CardContext";
 import { CloneCard } from "../Card/CloneCard";
+import { colors } from "../../constants/colors";
 
 export function ColumnWrapper({
   id,
   column,
   removeColumn,
+  refreshMainData,
 }: {
   id: number;
   column: Column;
   removeColumn(columnId: number): void;
+  refreshMainData(): void;
 }) {
   const { setHistoryData } = useContext(HistoryContext)!;
   const [isAddCard, setIsAddCard] = useState<boolean>(false);
@@ -65,7 +68,7 @@ export function ColumnWrapper({
     }
   }, [columnRect]);
 
-  // const isDraggingColumn = dragCardDataRef.current.columnId === column.id;
+  const isDraggingColumn = dragCardDataRef.current.columnId === column.id;
 
   useEffect(() => {
     if (
@@ -124,7 +127,7 @@ export function ColumnWrapper({
         isColumnDraggedOverRef.current = true;
 
         currentDraggedOverCardRef.current = {
-          cardId: 0,
+          cardId: null,
           columnId: column.id,
           position: "",
         };
@@ -137,19 +140,52 @@ export function ColumnWrapper({
         currentDraggedOverCardRef.current.columnId ===
           dragCardDataRef.current.columnId
       ) {
-        // isCardDraggedOverRef.current = false;
-        // isColumnDraggedOverRef.current = true;
+        isCardDraggedOverRef.current = false;
+        isColumnDraggedOverRef.current = true;
 
-        // currentDraggedOverCardRef.current = {
-        //   cardId: 0,
-        //   columnId: column.id,
-        //   position: "",
-        // };
+        currentDraggedOverCardRef.current = {
+          cardId: 0,
+          columnId: column.id,
+          position: "",
+        };
 
         console.log("자기야");
-        // setIsOverHalf(false);
+        setIsOverHalf(false);
         isDroppedRef.current = false;
       }
+      // const dragCard = dragCardDataRef.current.cardId;
+      // const dragOverColumn = currentDraggedOverCardRef.current.columnId;
+
+      // const putObj = {
+      //   cardId: dragCard,
+      //   categoryId: dragOverColumn,
+      //   beforeCardId: column.cards.length,
+      //   afterCardId: 0,
+      // };
+      // console.log("칼럼길이", column.cards.length);
+      // console.log(putObj);
+
+      // const url = `http://dev-todo-max-team5-be.ap-northeast-2.elasticbeanstalk.com/card/move`; // 카드를 수정할 엔드포인트
+      // // console.log(putObj);
+      // fetch(url, {
+      //   method: "PUT",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify(putObj),
+      // })
+      //   .then((response) => {
+      //     if (response.status === 200) {
+      //       console.log("카드가 성공적으로 수정되었습니다.");
+      //     } else if (response.status === 400) {
+      //       console.log("카드를 찾을 수 없습니다.");
+      //     } else {
+      //       console.log("카드 수정에 실패했습니다.");
+      //     }
+      //   })
+      //   .catch((error) => {
+      //     console.error("PUT 요청 중 에러가 발생했습니다:", error);
+      //   });
     }
   }, [
     columnRect,
@@ -177,7 +213,8 @@ export function ColumnWrapper({
     const newHistory = {
       title: inputTitle,
       at: columnTitle,
-      action: "카드등록",
+      action: "생성",
+      createdAt: new Date().toString(),
     };
 
     setHistoryData((prevHistoryData) => [newHistory, ...prevHistoryData]);
@@ -190,7 +227,8 @@ export function ColumnWrapper({
     const newHistory = {
       title: cardTitle,
       at: columnTitle,
-      action: "카드삭제",
+      action: "삭제",
+      createdAt: new Date().toString(),
     };
 
     setHistoryData((prevHistoryData) => [newHistory, ...prevHistoryData]);
@@ -222,46 +260,73 @@ export function ColumnWrapper({
 
   return (
     <div ref={columnRef} css={{ ...columnWrapper, position: "relative" }}>
-      <ColumnTitle
-        columnTitle={columnTitle}
-        cardsCount={cardsList.length}
-        showAddCard={showAddCard}
-        handleRemoveColumn={handleRemoveColumn}
-      />
-      {isAddCard && (
-        <AddCard closeAddCard={closeAddCard} addNewCard={addNewCard} />
-      )}
-      {cardsList.map((card) => (
-        <DefaultCard
-          columnId={column.id}
-          key={card.id}
-          id={card.id}
-          cardTitle={card.title}
-          cardContent={card.contents}
-          removeCard={removeCard}
-          updateEditCard={updateEditCard}
+      <div css={{ position: "fixed" }}>
+        <ColumnTitle
+          columnTitle={columnTitle}
+          cardsCount={cardsList.length}
+          showAddCard={showAddCard}
+          handleRemoveColumn={handleRemoveColumn}
         />
-      ))}
-      {isColumnDraggedOverRef.current &&
-      currentDraggedOverCardRef.current.columnId === column.id &&
-      dragCardDataRef.current.columnId !== column.id &&
-      !isCardDraggedOverRef.current ? (
-        <CloneCard
-          cloneType="to"
-          cloneCardPosition={{ x: 0, y: 0 }}
-          newCardTitle={dragCardDataRef.current.cardTitle!}
-          newCardContent={dragCardDataRef.current.cardContent!}
-          getUserDevice={dragCardDataRef.current.userAdvice}
-        />
-      ) : null}
+      </div>
+      <div
+        css={{
+          marginTop: "30px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "8px",
+        }}>
+        {isAddCard && (
+          <AddCard
+            id={id}
+            columnId={column.id}
+            closeAddCard={closeAddCard}
+            addNewCard={addNewCard}
+            refreshMainData={refreshMainData}
+          />
+        )}
+        {cardsList.map((card) => (
+          <DefaultCard
+            columnId={column.id}
+            key={card.id}
+            id={card.id}
+            cardTitle={card.title}
+            cardContent={card.contents}
+            removeCard={removeCard}
+            updateEditCard={updateEditCard}
+          />
+        ))}
+        {isColumnDraggedOverRef.current &&
+        currentDraggedOverCardRef.current.columnId === column.id &&
+        dragCardDataRef.current.columnId !== column.id &&
+        !isCardDraggedOverRef.current ? (
+          <CloneCard
+            cloneType="to"
+            cloneCardPosition={{ x: 0, y: 0 }}
+            newCardTitle={dragCardDataRef.current.cardTitle!}
+            newCardContent={dragCardDataRef.current.cardContent!}
+            getUserDevice={dragCardDataRef.current.userAdvice}
+          />
+        ) : null}
+      </div>
     </div>
   );
 }
 
 const columnWrapper = {
-  display: "flex",
-  flexDirection: "column" as const,
-  width: "300px",
-  // flexGrow: 1,
-  gap: "8px",
+  "display": "flex",
+  "flexDirection": "column" as const,
+  "width": "310px",
+  "height": "700px",
+  "overflow": "scroll",
+  "overflowX": "hidden" as const,
+  "gap": "8px",
+  "&::-webkit-scrollbar": {
+    width: "6px",
+  },
+  "&::-webkit-scrollbar-thumb": {
+    backgroundColor: colors.borderDefault,
+  },
+  "&::-webkit-scrollbar-thumb:hover": {
+    backgroundColor: colors.gray400,
+  },
 };
