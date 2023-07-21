@@ -200,48 +200,19 @@ export function DefaultCard({
       const dragCard = dragCardDataRef.current.cardId;
       const dragOverColumn = currentDraggedOverCardRef.current.columnId;
 
-      if (currentDraggedOverCardRef.current.cardId) {
-        const dragOverCard = currentDraggedOverCardRef.current.cardId;
+      const dragOverCard = currentDraggedOverCardRef.current.cardId;
 
-        const putObj = {
-          cardId: dragCard,
-          categoryId: dragOverColumn,
-          beforeCardId: isCard
-            ? isAbove
-              ? dragOverCard - 1
-              : dragOverCard
-            : 0,
-          afterCardId: isCard ? (isAbove ? dragOverCard : dragOverCard + 1) : 0,
-        };
+      const putObj = {
+        cardId: dragCard,
+        categoryId: dragOverColumn,
+        beforeCardId: isCard ? (isAbove ? dragOverCard - 1 : dragOverCard) : 0,
+        afterCardId: isCard ? (isAbove ? dragOverCard : dragOverCard + 1) : 0,
+      };
 
-        droppedCardRef.current = {
-          ...putObj,
-        };
-        //ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
-        // console.log(JSON.stringify(putObj));
+      droppedCardRef.current = {
+        ...putObj,
+      };
 
-        const url = `http://dev-todo-max-team5-be.ap-northeast-2.elasticbeanstalk.com/card/move`; // 카드를 수정할 엔드포인트
-
-        fetch(url, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(putObj),
-        })
-          .then((response) => {
-            if (response.status === 200) {
-              console.log("카드가 성공적으로 수정되었습니다.");
-            } else if (response.status === 400) {
-              console.log("카드를 찾을 수 없습니다.");
-            } else {
-              console.log("카드 수정에 실패했습니다.");
-            }
-          })
-          .catch((error) => {
-            console.error("PUT 요청 중 에러가 발생했습니다:", error);
-          });
-      }
       //ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
       isColumnDraggedOverRef.current = false;
       isCardDraggedOverRef.current = false;
@@ -426,7 +397,7 @@ export function DefaultCard({
           borderRadius: "8px",
           boxShadow: shadow.normal,
           opacity: isDragStartRef.current ? 0.5 : 1,
-          zIndex: isDragStartRef.current ? 10 : 0,
+          zIndex: isDragStartRef.current ? 9999 : 0,
         }}>
         <div
           css={{
